@@ -3,7 +3,6 @@ project(stonefish_ros)
 
 find_package(catkin REQUIRED COMPONENTS
   message_generation
-  cola2_msgs
   geometry_msgs
   nav_msgs
   sensor_msgs
@@ -17,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   pcl_conversions
   image_transport
   controller_manager
+	seal_msgs
 )
 
 find_package(PkgConfig REQUIRED)
@@ -47,8 +47,7 @@ add_compile_options(${Stonefish_CFLAGS})
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES stonefish_ros
-  CATKIN_DEPENDS cola2_msgs
-                 geometry_msgs
+  CATKIN_DEPENDS geometry_msgs
                  nav_msgs
                  sensor_msgs
                  std_msgs
@@ -62,7 +61,8 @@ catkin_package(
                  pcl_ros
                  image_transport
                  controller_manager
-  DEPENDS Stonefish
+								 seal_msgs
+	# DEPENDS Stonefish
 )
 
 include_directories(
@@ -76,7 +76,7 @@ link_directories(
 )
 
 #Library
-add_library(stonefish_ros SHARED
+add_library(stonefish_ros STATIC
 src/ROSInterface.cpp
 src/ROSSimulationManager.cpp
 src/ROSScenarioParser.cpp

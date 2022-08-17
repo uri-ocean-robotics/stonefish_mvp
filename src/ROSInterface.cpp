@@ -69,9 +69,7 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl_ros/point_cloud.h>
-#include <cola2_msgs/DVL.h>
-#include <cola2_msgs/Float32Stamped.h>
-#include <cola2_msgs/NavSts.h>
+
 #include <stonefish_ros/Int32Stamped.h>
 #include <stonefish_ros/BeaconInfo.h>
 
@@ -189,16 +187,17 @@ void ROSInterface::PublishDVL(ros::Publisher& pub, DVL* dvl)
     Scalar vVariance = dvl->getSensorChannelDescription(0).stdDev;
     vVariance *= vVariance; //Variance is square of standard deviation
     //Publish DVL message
-    cola2_msgs::DVL msg;
+    geometry_msgs::TwistWithCovarianceStamped msg;
+
     msg.header.stamp = ros::Time::now();
     msg.header.frame_id = dvl->getName();
-    msg.velocity.x = s.getValue(0);
-    msg.velocity.y = s.getValue(1);
-    msg.velocity.z = s.getValue(2);
-    msg.velocity_covariance[0] = vVariance;
-    msg.velocity_covariance[4] = vVariance;
-    msg.velocity_covariance[8] = vVariance;
-    msg.altitude = (status == 0 || status == 2) ? s.getValue(3) : -1.0;
+    msg.twist.twist.linear.x = s.getValue(0);
+    msg.twist.twist.linear.y = s.getValue(1);
+    msg.twist.twist.linear.z = s.getValue(2);
+    msg.twist.covariance[0] = vVariance;
+    msg.twist.covariance[4] = vVariance;
+    msg.twist.covariance[8] = vVariance;
+
     pub.publish(msg);
 }
 
@@ -273,36 +272,6 @@ void ROSInterface::PublishOdometry(ros::Publisher& pub, Odometry* odom)
     msg.twist.twist.angular.x = s.getValue(10);
     msg.twist.twist.angular.y = s.getValue(11);
     msg.twist.twist.angular.z = s.getValue(12);
-    pub.publish(msg);
-}
-
-
-void ROSInterface::PublishINS(ros::Publisher& pub, INS* ins)
-{
-    Scalar lat, lon, h;
-    SimulationApp::getApp()->getSimulationManager()->getNED()->Ned2Geodetic(0.0, 0.0, 0.0, lat, lon, h);
-
-    Sample s = ins->getLastSample();
-    cola2_msgs::NavSts msg;
-    msg.header.stamp = ros::Time::now();
-    msg.header.frame_id = ins->getName();
-    msg.position.north = s.getValue(0);
-    msg.position.east = s.getValue(1);
-    msg.position.depth = s.getValue(2);
-    msg.altitude = s.getValue(3);
-    msg.global_position.latitude = s.getValue(4);
-    msg.global_position.longitude = s.getValue(5);
-    msg.origin.latitude = lat;
-    msg.origin.longitude = lon;
-    msg.body_velocity.x = s.getValue(6);
-    msg.body_velocity.y = s.getValue(7);
-    msg.body_velocity.z = s.getValue(8);
-    msg.orientation.roll = s.getValue(9);
-    msg.orientation.pitch = s.getValue(10);
-    msg.orientation.yaw = s.getValue(11);
-    msg.orientation_rate.roll = s.getValue(12);
-    msg.orientation_rate.pitch = s.getValue(13);
-    msg.orientation_rate.yaw = s.getValue(14);
     pub.publish(msg);
 }
 

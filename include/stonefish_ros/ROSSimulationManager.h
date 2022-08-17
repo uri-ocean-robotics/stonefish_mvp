@@ -30,6 +30,11 @@
 #include <Stonefish/core/SimulationManager.h>
 #include <Stonefish/actuators/VariableBuoyancy.h>
 #include <Stonefish/actuators/Servo.h>
+#include <Stonefish/actuators/Thruster.h>
+#include <Stonefish/actuators/Propeller.h>
+#include <Stonefish/actuators/Rudder.h>
+#include <Stonefish/actuators/Light.h>
+
 //ROS
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
@@ -41,7 +46,7 @@
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <nav_msgs/Odometry.h>
-#include <cola2_msgs/Setpoints.h>
+// #include <cola2_msgs/Setpoints.h>
 #include <std_srvs/Trigger.h>
 #include <stonefish_ros/SonarSettings.h>
 #include <stonefish_ros/SonarSettings2.h>
@@ -50,6 +55,50 @@
 
 namespace sf
 {
+
+    struct ROSActuator
+    {
+
+
+        Scalar setPoint;
+
+        Actuator* actuator;
+
+        std::string rosSubTopicName;
+
+        ROSActuator(Actuator* actuator) :
+            actuator(actuator), setPoint(Scalar(0))
+        {
+            rosSubTopicName = std::string("control/" + actuator->getName());
+        }
+
+        void applySetPoint()
+        {
+            switch(actuator->getType()) {
+                case ActuatorType::THRUSTER:
+                    ((Thruster*)actuator)->setSetpoint(setPoint);
+                    break;
+                case ActuatorType::PROPELLER:
+                    ((Propeller*)actuator)->setSetpoint(setPoint);
+                    break;
+                case ActuatorType::RUDDER:
+                    ((Rudder*)actuator)->setSetpoint(setPoint);
+                    break;
+                    // TODO: how should I control the VBS?
+                case ActuatorType::VBS:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        void callback(const std_msgs::Float64ConstPtr& msg)
+        {
+            setPoint = msg->data;
+        }
+
+    };
+
 	class ColorCamera;
 	class DepthCamera;
 	class Multibeam2;
@@ -76,6 +125,19 @@ namespace sf
 			propellerSetpoints = std::vector<Scalar>(nPropellers, Scalar(0));
 			rudderSetpoints = std::vector<Scalar>(nRudders, Scalar(0));
 		}
+
+        std::vector<ROSActuator> rosActuators;
+
+        ROSRobot(Robot* robot) : robot(robot), publishBaseLinkTransform(false)
+        {
+
+            unsigned int aID = 0;
+            Actuator* actuator;
+            while((actuator = robot->getActuator(aID++)) != nullptr)
+            {
+                rosActuators.emplace_back(ROSActuator(actuator));
+            }
+        }
 	};
 
 	// A class....
@@ -149,39 +211,6 @@ namespace sf
 
 	private:
 		Jet* vf;
-	};
-
-	class ThrustersCallback
-	{
-	public:
-		ThrustersCallback(ROSSimulationManager* sm, ROSRobot* robot);
-		void operator()(const cola2_msgs::SetpointsConstPtr& msg);
-
-	private:
-		ROSSimulationManager* sm;
-		ROSRobot* robot;
-	};
-
-	class PropellersCallback
-	{
-	public:
-		PropellersCallback(ROSSimulationManager* sm, ROSRobot* robot);
-		void operator()(const cola2_msgs::SetpointsConstPtr& msg);
-
-	private:
-		ROSSimulationManager* sm;
-		ROSRobot* robot;
-	};
-
-	class RuddersCallback
-	{
-	public:
-		RuddersCallback(ROSSimulationManager* sm, ROSRobot* robot);
-		void operator()(const cola2_msgs::SetpointsConstPtr& msg);
-
-	private:
-		ROSSimulationManager* sm;
-		ROSRobot* robot;
 	};
 
 	class ServosCallback

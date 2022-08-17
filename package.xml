@@ -12,7 +12,6 @@
 	<depend>roslib</depend>
 	<depend>message_generation</depend>
 	<depend>message_runtime</depend>
-	<depend>cola2_msgs</depend>
 	<depend>geometry_msgs</depend>
 	<depend>nav_msgs</depend>
 	<depend>sensor_msgs</depend>
@@ -24,5 +23,5 @@
 	<depend>pcl_ros</depend>
 	<depend>image_transport</depend>
 	<depend>controller_manager</depend>
-	<depend>Stonefish</depend>
+	<depend>seal_msgs</depend>
 </package>

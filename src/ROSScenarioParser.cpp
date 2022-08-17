@@ -62,9 +62,6 @@
 #include <visualization_msgs/MarkerArray.h>
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_types.h>
-#include <cola2_msgs/DVL.h>
-#include <cola2_msgs/Setpoints.h>
-#include <cola2_msgs/NavSts.h>
 #include <stonefish_ros/ThrusterState.h>
 #include <stonefish_ros/Int32Stamped.h>
 #include <stonefish_ros/BeaconInfo.h>
@@ -267,7 +264,12 @@ bool ROSScenarioParser::ParseRobot(XMLElement* element)
         }
     }
 
-    ROSRobot* rosRobot = new ROSRobot(robot, nThrusters, nPropellers, nRudders);
+    /**
+     * @changeby: Emir Cem Gezer
+     * @description: It now uses different constructor. Actuator objects are
+     *               generated inside the constructor, except the servos.
+     */
+    ROSRobot* rosRobot = new ROSRobot(robot);
 
     //Check if we should publish world_ned -> base_link transform
     XMLElement* item;
@@ -277,6 +279,30 @@ bool ROSScenarioParser::ParseRobot(XMLElement* element)
     //Save robot
     sim->AddROSRobot(rosRobot);
 
+    /**
+     * @changeby: Emir Cem Gezer
+     * @description:Add "ros_subscriber" tag
+     */
+    for(auto& a : rosRobot->rosActuators) {
+        std::string rosSubTopicName = a.rosSubTopicName;
+        for(auto* e = element->FirstChildElement("actuator"); e != nullptr; e = e->NextSiblingElement("actuator"))
+        {
+            if(a.actuator->getName().find(e->Attribute("name")) != std::string::npos)
+            {
+                XMLElement* re = e->FirstChildElement("ros_subscriber");
+                if(re)
+                {
+                   rosSubTopicName = re->Attribute("topic");
+                }
+                break;
+            }
+        }
+        subs[robot->getName() + "/actuators" + a.actuator->getName()] =
+            nh.subscribe<std_msgs::Float64>(
+                rosSubTopicName, 10,
+                std::bind(&ROSActuator::callback, &a, std::placeholders::_1));
+    }
+
     //Generate subscribers
     if((item = element->FirstChildElement("ros_subscriber")) != nullptr)
     {
@@ -284,15 +310,6 @@ bool ROSScenarioParser::ParseRobot(XMLElement* element)
         const char* topicProp = nullptr;
         const char* topicRudder = nullptr;
         const char* topicSrv = nullptr;
-
-        if(nThrusters > 0 && item->QueryStringAttribute("thrusters", &topicThrust) == XML_SUCCESS)
-            subs[robot->getName() + "/thrusters"] = nh.subscribe<cola2_msgs::Setpoints>(std::string(topicThrust), 10, ThrustersCallback(sim, rosRobot));
-
-        if(nPropellers > 0 && item->QueryStringAttribute("propellers", &topicProp) == XML_SUCCESS)
-            subs[robot->getName() + "/propellers"] = nh.subscribe<cola2_msgs::Setpoints>(std::string(topicProp), 10, PropellersCallback(sim, rosRobot));
-
-        if(nRudders > 0 && item->QueryStringAttribute("rudders", &topicRudder) == XML_SUCCESS)
-            subs[robot->getName() + "/rudders"] = nh.subscribe<cola2_msgs::Setpoints>(std::string(topicRudder), 10, RuddersCallback(sim, rosRobot));
 
         if(nServos > 0 && item->QueryStringAttribute("servos", &topicSrv) == XML_SUCCESS)
         {
@@ -597,7 +614,7 @@ Sensor* ROSScenarioParser::ParseSensor(XMLElement* element, const std::string& n
 
                     case ScalarSensorType::DVL:
                     {
-                        pubs[sensorName] = nh.advertise<cola2_msgs::DVL>(topicStr, queueSize);
+                        pubs[sensorName] = nh.advertise<geometry_msgs::TwistWithCovarianceStamped>(topicStr, queueSize);
 
                         //Second topic with altitude
                         const char* altTopic = nullptr;
@@ -619,7 +636,9 @@ Sensor* ROSScenarioParser::ParseSensor(XMLElement* element, const std::string& n
 
                     case ScalarSensorType::INS:
                     {
+                        /*
                         pubs[sensorName] = nh.advertise<cola2_msgs::NavSts>(topicStr, queueSize);
+                         */
 
                         //Second topic with odometry
                         const char* odomTopic = nullptr;

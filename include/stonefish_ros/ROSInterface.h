@@ -67,7 +67,7 @@ namespace sf
         static void PublishDVLAltitude(ros::Publisher& pub, DVL* dvl);
         static void PublishGPS(ros::Publisher& pub, GPS* gps);
         static void PublishOdometry(ros::Publisher& pub, Odometry* odom);
-        static void PublishINS(ros::Publisher& pub, INS* ins);
+        // static void PublishINS(ros::Publisher& pub, INS* ins);
         static void PublishINSOdometry(ros::Publisher& pub, INS* ins);
         static void PublishForceTorque(ros::Publisher& pub, ForceTorque* ft);
         static void PublishEncoder(ros::Publisher& pub, RotaryEncoder* enc);

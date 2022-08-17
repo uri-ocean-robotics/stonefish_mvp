@@ -230,9 +230,11 @@ void ROSSimulationManager::SimulationStepCompleted(Scalar timeStep)
 
                 case ScalarSensorType::INS:
                 {
+                    /*
                     ROSInterface::PublishINS(pubs.at(sensor->getName()), (INS*)sensor);
                     if(pubs.find(sensor->getName() + "/odometry") != pubs.end())
                         ROSInterface::PublishINSOdometry(pubs.at(sensor->getName() + "/odometry"), (INS*)sensor);
+                     */
                 }
                     break;
 
@@ -401,22 +403,18 @@ void ROSSimulationManager::SimulationStepCompleted(Scalar timeStep)
         unsigned int propID = 0;
         unsigned int rudderID = 0;
 
+        for(auto& a : rosRobots[i]->rosActuators) {
+            a.applySetPoint();
+        }
+
         while((actuator = rosRobots[i]->robot->getActuator(aID++)) != nullptr)
         {
             switch(actuator->getType())
             {
                 case ActuatorType::THRUSTER:
-                    ((Thruster*)actuator)->setSetpoint(rosRobots[i]->thrusterSetpoints[thID++]);
-                    break;
-
                 case ActuatorType::PROPELLER:
-                    ((Propeller*)actuator)->setSetpoint(rosRobots[i]->propellerSetpoints[propID++]);
-                    break;
-
                 case ActuatorType::RUDDER:
-                    ((Rudder*)actuator)->setSetpoint(rosRobots[i]->rudderSetpoints[rudderID++]);
                     break;
-
                 case ActuatorType::SERVO:
                 {
                     if(rosRobots[i]->servoSetpoints.size() == 0)
@@ -615,54 +613,6 @@ JetVFCallback::JetVFCallback(Jet* vf) : vf(vf)
 void JetVFCallback::operator()(const std_msgs::Float64ConstPtr& msg)
 {
     vf->setOutletVelocity(msg->data);
-}
-
-ThrustersCallback::ThrustersCallback(ROSSimulationManager* sm, ROSRobot* robot) : sm(sm), robot(robot)
-{
-}
-
-void ThrustersCallback::operator()(const cola2_msgs::SetpointsConstPtr& msg)
-{
-    if(msg->setpoints.size() != robot->thrusterSetpoints.size())
-    {
-        ROS_ERROR_STREAM("Wrong number of thruster setpoints for robot: " << robot->robot->getName());
-        return;
-    }
-
-    for(size_t i=0; i<robot->thrusterSetpoints.size(); ++i)
-        robot->thrusterSetpoints[i] = msg->setpoints[i];
-}
-
-PropellersCallback::PropellersCallback(ROSSimulationManager* sm, ROSRobot* robot) : sm(sm), robot(robot)
-{
-}
-
-void PropellersCallback::operator()(const cola2_msgs::SetpointsConstPtr& msg)
-{
-    if(msg->setpoints.size() != robot->propellerSetpoints.size())
-    {
-        ROS_ERROR_STREAM("Wrong number of propeller setpoints for robot: " << robot->robot->getName());
-        return;
-    }
-
-    for(size_t i=0; i<robot->propellerSetpoints.size(); ++i)
-        robot->propellerSetpoints[i] = msg->setpoints[i];
-}
-
-RuddersCallback::RuddersCallback(ROSSimulationManager* sm, ROSRobot* robot) : sm(sm), robot(robot)
-{
-}
-
-void RuddersCallback::operator()(const cola2_msgs::SetpointsConstPtr& msg)
-{
-    if(msg->setpoints.size() != robot->rudderSetpoints.size())
-    {
-        ROS_ERROR_STREAM("Wrong number of rudder setpoints for robot: " << robot->robot->getName());
-        return;
-    }
-
-    for(size_t i=0; i<robot->rudderSetpoints.size(); ++i)
-        robot->rudderSetpoints[i] = msg->setpoints[i];
 }
 
 ServosCallback::ServosCallback(ROSSimulationManager* sm, ROSRobot* robot) : sm(sm), robot(robot)
