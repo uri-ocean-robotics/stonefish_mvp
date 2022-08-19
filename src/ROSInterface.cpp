@@ -1,4 +1,4 @@
-/*    
+/*
     This file is a part of stonefish_ros.
 
     stonefish_ros is free software: you can redistribute it and/or modify
@@ -92,10 +92,10 @@ void ROSInterface::PublishTF(tf::TransformBroadcaster& broadcaster, const Transf
 void ROSInterface::PublishAccelerometer(ros::Publisher& pub, Accelerometer* acc)
 {
     Sample s = acc->getLastSample();
-    Vector3 accelStdDev = Vector3(acc->getSensorChannelDescription(0).stdDev, 
+    Vector3 accelStdDev = Vector3(acc->getSensorChannelDescription(0).stdDev,
                                   acc->getSensorChannelDescription(1).stdDev,
                                   acc->getSensorChannelDescription(2).stdDev);
-    
+
     geometry_msgs::AccelWithCovarianceStamped msg;
     msg.header.stamp = ros::Time::now();
     msg.header.frame_id = acc->getName();
@@ -111,7 +111,7 @@ void ROSInterface::PublishAccelerometer(ros::Publisher& pub, Accelerometer* acc)
 void ROSInterface::PublishGyroscope(ros::Publisher& pub, Gyroscope* gyro)
 {
     Sample s = gyro->getLastSample();
-    Vector3 avelocityStdDev = Vector3(gyro->getSensorChannelDescription(0).stdDev, 
+    Vector3 avelocityStdDev = Vector3(gyro->getSensorChannelDescription(0).stdDev,
                                       gyro->getSensorChannelDescription(1).stdDev,
                                       gyro->getSensorChannelDescription(2).stdDev);
 
@@ -143,7 +143,7 @@ void ROSInterface::PublishIMU(ros::Publisher& pub, IMU* imu)
                                 imu->getSensorChannelDescription(8).stdDev);
     //Variance is sigma^2!
     sensor_msgs::Imu msg;
-    msg.header.stamp = ros::Time::now();    
+    msg.header.stamp = ros::Time::now();
     msg.header.frame_id = imu->getName();
     msg.orientation.x = quat.x();
     msg.orientation.y = quat.y();
@@ -301,7 +301,7 @@ void ROSInterface::PublishINSOdometry(ros::Publisher& pub, INS* ins)
 
 void ROSInterface::PublishForceTorque(ros::Publisher& pub, ForceTorque* ft)
 {
-    Sample s = ft->getLastSample();    
+    Sample s = ft->getLastSample();
     geometry_msgs::WrenchStamped msg;
     msg.header.stamp = ros::Time::now();
     msg.header.frame_id = ft->getName();
@@ -341,7 +341,7 @@ void ROSInterface::PublishMultibeam(ros::Publisher& pub, Multibeam* mb)
     sensor_msgs::LaserScan msg;
     msg.header.stamp = ros::Time::now();
     msg.header.frame_id = mb->getName();
-    
+
     msg.angle_min = -angRange/Scalar(2); // start angle of the scan [rad]
     msg.angle_max = angRange/Scalar(2); // end angle of the scan [rad]
     msg.angle_increment = angRange/Scalar(angSteps-1); // angular distance between measurements [rad]
@@ -349,7 +349,7 @@ void ROSInterface::PublishMultibeam(ros::Publisher& pub, Multibeam* mb)
     msg.range_max = channel.rangeMax; // maximum range value [m]
     msg.time_increment = 0.; // time between measurements [seconds] - if your scanner is moving, this will be used in interpolating position of 3d points
     msg.scan_time = 0.; // time between scans [seconds]
-    
+
     msg.ranges.resize(angSteps); // range data [m] (Note: values < range_min or > range_max should be discarded)
     for(uint32_t i = 0; i<angSteps; ++i)
         msg.ranges[i] = distances[i];
@@ -374,7 +374,7 @@ void ROSInterface::PublishMultibeamPCL(ros::Publisher& pub, Multibeam* mb)
 
     for(size_t i = 0; i < angSteps; ++i)
         if(distances[i] < channel.rangeMax && distances[i] > channel.rangeMin) // Only publish good points
-        {  
+        {
             double angle = angleMin + i * angleIncrement;
             pcl::PointXYZ pt;
             pt.y = btSin(angle) * distances[i];
@@ -406,7 +406,7 @@ void ROSInterface::PublishProfiler(ros::Publisher& pub, Profiler* prof)
     sensor_msgs::LaserScan msg;
     msg.header.stamp = ros::Time::now();
     msg.header.frame_id = prof->getName();
-    
+
     msg.angle_min = hist->front().getValue(0);
     msg.angle_max = hist->back().getValue(0);
     msg.range_min = channel.rangeMin; // minimum range value [m]
@@ -414,7 +414,7 @@ void ROSInterface::PublishProfiler(ros::Publisher& pub, Profiler* prof)
     msg.angle_increment = hist->size() == 1 ? 0.0 : hist->at(1).getValue(0) - hist->at(0).getValue(0);
     msg.time_increment = hist->size() == 1 ? 0.0 : hist->at(1).getTimestamp() - hist->at(0).getTimestamp();
     msg.scan_time = hist->back().getTimestamp() - hist->front().getTimestamp();
-    
+
     if(hist->size() == 1) // RVIZ does not display LaserScan with one range
     {
         msg.ranges.resize(2);
@@ -444,7 +444,7 @@ void ROSInterface::PublishMultibeam2(ros::Publisher& pub, Multibeam2* mb)
     mb->getResolution(hRes, vRes);
     glm::vec2 range = mb->getRangeLimits();
     float hFovRad = mb->getHorizontalFOV()/180.f*M_PI;
-    float vFovRad = mb->getVerticalFOV()/180.f*M_PI; 
+    float vFovRad = mb->getVerticalFOV()/180.f*M_PI;
     float hStepAngleRad = hFovRad/(float)(hRes-1);
     float vStepAngleRad = vFovRad/(float)(vRes-1);
 
@@ -459,7 +459,7 @@ void ROSInterface::PublishMultibeam2(ros::Publisher& pub, Multibeam2* mb)
         uint32_t offset = v*hRes;
         float hAngleRad = -hFovRad/2.f + (0.5f/hRes*hFovRad);
         float vAngleRad = vFovRad/2.f - ((0.5f+v)/vRes*vFovRad);
-        
+
         for(uint32_t h=0; h<hRes; ++h)
         {
             float depth = data[offset + h];
@@ -475,7 +475,7 @@ void ROSInterface::PublishMultibeam2(ros::Publisher& pub, Multibeam2* mb)
             hAngleRad += hStepAngleRad;
         }
     }
-    
+
     pcl_conversions::toPCL(ros::Time::now(), msg->header.stamp);
     try
     {
@@ -497,7 +497,7 @@ void ROSInterface::PublishContact(ros::Publisher& pub, Contact* cnt)
         return;
 
     ContactPoint cp = cnt->getHistory().back();
-    
+
     //Publish marker message
     visualization_msgs::Marker msg;
     msg.header.frame_id = "world_ned";
@@ -531,12 +531,12 @@ void ROSInterface::PublishUSBL(ros::Publisher& pub, ros::Publisher& pub_info, US
 {
     std::map<uint64_t, BeaconInfo>& beacons = usbl->getBeaconInfo();
     if(beacons.size() == 0)
-        return;   
+        return;
 
     visualization_msgs::MarkerArray msg;
     visualization_msgs::Marker marker;
     stonefish_ros::BeaconInfo info;
-    
+
     marker.header.frame_id = usbl->getName();
     marker.header.stamp = ros::Time::now();
     info.header.frame_id = marker.header.frame_id;
@@ -562,7 +562,7 @@ void ROSInterface::PublishUSBL(ros::Publisher& pub, ros::Publisher& pub_info, US
         marker.pose.position.x = pos.getX();
         marker.pose.position.y = pos.getY();
         marker.pose.position.z = pos.getZ();
-        msg.markers.push_back(marker);    
+        msg.markers.push_back(marker);
 
         info.beacon_id = it->first;
         info.range = it->second.range;
@@ -648,7 +648,7 @@ std::pair<sensor_msgs::ImagePtr, sensor_msgs::CameraInfoPtr> ROSInterface::Gener
     info->K[2] = (double)info->width/2.0; //cx
     info->K[5] = (double)info->height/2.0; //cy
     info->K[0] = info->K[2]/tanhfov2; //fx
-    info->K[4] = info->K[5]/tanvfov2; //fy 
+    info->K[4] = info->K[5]/tanvfov2; //fy
     info->K[8] = 1.0;
     //Projection
     info->P[2] = info->K[2]; //cx'
@@ -664,7 +664,7 @@ std::pair<sensor_msgs::ImagePtr, sensor_msgs::CameraInfoPtr> ROSInterface::Gener
     info->roi.height = info->height;
     info->roi.width = info->width;
     info->roi.do_rectify = false;
-	
+
     return std::make_pair(img, info);
 }
 
@@ -687,7 +687,7 @@ std::pair<sensor_msgs::ImagePtr, sensor_msgs::ImagePtr> ROSInterface::GenerateFL
 	disp->is_bigendian = 0;
     disp->step = disp->width * 3;
     disp->data.resize(disp->step * disp->height);
-    
+
     return std::make_pair(img, disp);
 }
 
@@ -710,7 +710,7 @@ std::pair<sensor_msgs::ImagePtr, sensor_msgs::ImagePtr> ROSInterface::GenerateSS
 	disp->is_bigendian = 0;
     disp->step = disp->width * 3;
     disp->data.resize(disp->step * disp->height);
-    
+
     return std::make_pair(img, disp);
 }
 
@@ -733,7 +733,7 @@ std::pair<sensor_msgs::ImagePtr, sensor_msgs::ImagePtr> ROSInterface::GenerateMS
 	disp->is_bigendian = 0;
     disp->step = disp->width * 3;
     disp->data.resize(disp->step * disp->height);
-    
+
     return std::make_pair(img, disp);
 }
 

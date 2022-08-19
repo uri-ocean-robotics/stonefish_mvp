@@ -99,32 +99,24 @@ namespace sf
 
     };
 
-	class ColorCamera;
-	class DepthCamera;
-	class Multibeam2;
-	class FLS;
-	class SSS;
-	class MSIS;
-	class ManualTrajectory;
-	class Uniform;
-	class Jet;
+    class ColorCamera;
+    class DepthCamera;
+    class Multibeam2;
+    class FLS;
+    class SSS;
+    class MSIS;
+    class ManualTrajectory;
+    class Uniform;
+    class Jet;
 
-	struct ROSRobot
-	{
-		Robot* robot;
-		bool publishBaseLinkTransform;
-		std::vector<Scalar> thrusterSetpoints;
-		std::vector<Scalar> propellerSetpoints;
-		std::vector<Scalar> rudderSetpoints;
-		std::map<std::string, std::pair<ServoControlMode, Scalar>> servoSetpoints;
-
-		ROSRobot(Robot* robot, unsigned int nThrusters, unsigned int nPropellers, unsigned int nRudders=0)
-			: robot(robot), publishBaseLinkTransform(false)
-		{
-			thrusterSetpoints = std::vector<Scalar>(nThrusters, Scalar(0));
-			propellerSetpoints = std::vector<Scalar>(nPropellers, Scalar(0));
-			rudderSetpoints = std::vector<Scalar>(nRudders, Scalar(0));
-		}
+    struct ROSRobot
+    {
+        Robot* robot;
+        bool publishBaseLinkTransform;
+        std::vector<Scalar> thrusterSetpoints;
+        std::vector<Scalar> propellerSetpoints;
+        std::vector<Scalar> rudderSetpoints;
+        std::map<std::string, std::pair<ServoControlMode, Scalar>> servoSetpoints;
 
         std::vector<ROSActuator> rosActuators;
 
@@ -138,189 +130,189 @@ namespace sf
                 rosActuators.emplace_back(ROSActuator(actuator));
             }
         }
-	};
+    };
 
-	// A class....
-	class ROSSimulationManager : public SimulationManager
-	{
-	public:
-		ROSSimulationManager(Scalar stepsPerSecond, std::string scenarioFilePath);
-	    virtual ~ROSSimulationManager();
+    // A class....
+    class ROSSimulationManager : public SimulationManager
+    {
+    public:
+        ROSSimulationManager(Scalar stepsPerSecond, std::string scenarioFilePath);
+        virtual ~ROSSimulationManager();
 
-		virtual void BuildScenario();
-		virtual void DestroyScenario();
+        virtual void BuildScenario();
+        virtual void DestroyScenario();
 
-	    void AddROSRobot(ROSRobot* robot);
+        void AddROSRobot(ROSRobot* robot);
 
-		virtual void SimulationStepCompleted(Scalar timeStep);
-	    virtual void ColorCameraImageReady(ColorCamera* cam);
-	    virtual void DepthCameraImageReady(DepthCamera* cam);
-		virtual void Multibeam2ScanReady(Multibeam2* mb);
-		virtual void FLSScanReady(FLS* fls);
-		virtual void SSSScanReady(SSS* sss);
-		virtual void MSISScanReady(MSIS* sss);
+        virtual void SimulationStepCompleted(Scalar timeStep);
+        virtual void ColorCameraImageReady(ColorCamera* cam);
+        virtual void DepthCameraImageReady(DepthCamera* cam);
+        virtual void Multibeam2ScanReady(Multibeam2* mb);
+        virtual void FLSScanReady(FLS* fls);
+        virtual void SSSScanReady(SSS* sss);
+        virtual void MSISScanReady(MSIS* sss);
 
-	    bool EnableCurrents(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
-		bool DisableCurrents(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
+        bool EnableCurrents(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
+        bool DisableCurrents(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
 
-		virtual uint64_t getSimulationClock();
-		virtual void SimulationClockSleep(uint64_t us);
-	    ros::NodeHandle& getNodeHandle();
-	    image_transport::ImageTransport& getImageTransportHandle();
-	    std::map<std::string, ros::ServiceServer>& getServiceServers();
-		std::map<std::string, ros::Publisher>& getPublishers();
-		std::map<std::string, image_transport::Publisher>& getImagePublishers();
-	    std::map<std::string, ros::Subscriber>& getSubscribers();
-		std::map<std::string, std::pair<sensor_msgs::ImagePtr, sensor_msgs::CameraInfoPtr>>& getCameraMsgPrototypes();
-		std::map<std::string, std::pair<sensor_msgs::ImagePtr, sensor_msgs::ImagePtr>>& getSonarMsgPrototypes();
-		std::vector<ROSControlInterface*>& getControlInterfaces();
+        virtual uint64_t getSimulationClock();
+        virtual void SimulationClockSleep(uint64_t us);
+        ros::NodeHandle& getNodeHandle();
+        image_transport::ImageTransport& getImageTransportHandle();
+        std::map<std::string, ros::ServiceServer>& getServiceServers();
+        std::map<std::string, ros::Publisher>& getPublishers();
+        std::map<std::string, image_transport::Publisher>& getImagePublishers();
+        std::map<std::string, ros::Subscriber>& getSubscribers();
+        std::map<std::string, std::pair<sensor_msgs::ImagePtr, sensor_msgs::CameraInfoPtr>>& getCameraMsgPrototypes();
+        std::map<std::string, std::pair<sensor_msgs::ImagePtr, sensor_msgs::ImagePtr>>& getSonarMsgPrototypes();
+        std::vector<ROSControlInterface*>& getControlInterfaces();
 
-	protected:
-		std::string scnFilePath;
-		ros::NodeHandle nh;
-		ros::AsyncSpinner spinner;
-		image_transport::ImageTransport it;
-		tf::TransformBroadcaster br;
-		ros::ServiceServer srvECurrents, srvDCurrents;
-		std::map<std::string, ros::ServiceServer> srvs;
-		std::map<std::string, ros::Publisher> pubs;
-		std::map<std::string, image_transport::Publisher> imgPubs;
-		std::map<std::string, ros::Subscriber> subs;
-		std::map<std::string, std::pair<sensor_msgs::ImagePtr, sensor_msgs::CameraInfoPtr>> cameraMsgPrototypes;
-		std::map<std::string, std::pair<sensor_msgs::ImagePtr, sensor_msgs::ImagePtr>> sonarMsgPrototypes;
-		std::vector<ROSRobot*> rosRobots;
-		std::vector<ROSControlInterface*> controlIfs;
-	};
+    protected:
+        std::string scnFilePath;
+        ros::NodeHandle nh;
+        ros::AsyncSpinner spinner;
+        image_transport::ImageTransport it;
+        tf::TransformBroadcaster br;
+        ros::ServiceServer srvECurrents, srvDCurrents;
+        std::map<std::string, ros::ServiceServer> srvs;
+        std::map<std::string, ros::Publisher> pubs;
+        std::map<std::string, image_transport::Publisher> imgPubs;
+        std::map<std::string, ros::Subscriber> subs;
+        std::map<std::string, std::pair<sensor_msgs::ImagePtr, sensor_msgs::CameraInfoPtr>> cameraMsgPrototypes;
+        std::map<std::string, std::pair<sensor_msgs::ImagePtr, sensor_msgs::ImagePtr>> sonarMsgPrototypes;
+        std::vector<ROSRobot*> rosRobots;
+        std::vector<ROSControlInterface*> controlIfs;
+    };
 
-	//Callback functors
-	class UniformVFCallback
-	{
-	public:
-		UniformVFCallback(Uniform* vf);
-		void operator()(const geometry_msgs::Vector3ConstPtr& msg);
+    //Callback functors
+    class UniformVFCallback
+    {
+    public:
+        UniformVFCallback(Uniform* vf);
+        void operator()(const geometry_msgs::Vector3ConstPtr& msg);
 
-	private:
-		Uniform* vf;
-	};
+    private:
+        Uniform* vf;
+    };
 
-	class JetVFCallback
-	{
-	public:
-		JetVFCallback(Jet* vf);
-		void operator()(const std_msgs::Float64ConstPtr& msg);
+    class JetVFCallback
+    {
+    public:
+        JetVFCallback(Jet* vf);
+        void operator()(const std_msgs::Float64ConstPtr& msg);
 
-	private:
-		Jet* vf;
-	};
+    private:
+        Jet* vf;
+    };
 
-	class ServosCallback
-	{
-	public:
-		ServosCallback(ROSSimulationManager* sm, ROSRobot* robot);
-		void operator()(const sensor_msgs::JointStateConstPtr& msg);
+    class ServosCallback
+    {
+    public:
+        ServosCallback(ROSSimulationManager* sm, ROSRobot* robot);
+        void operator()(const sensor_msgs::JointStateConstPtr& msg);
 
-	private:
-		ROSSimulationManager* sm;
-		ROSRobot* robot;
-	};
+    private:
+        ROSSimulationManager* sm;
+        ROSRobot* robot;
+    };
 
-	class JointGroupCallback
-	{
-	public:
-		JointGroupCallback(ROSSimulationManager* sm, ROSRobot* robot,
-						   ServoControlMode mode, const std::vector<std::string>& jointNames);
-		void operator()(const std_msgs::Float64MultiArrayConstPtr& msg);
+    class JointGroupCallback
+    {
+    public:
+        JointGroupCallback(ROSSimulationManager* sm, ROSRobot* robot,
+                           ServoControlMode mode, const std::vector<std::string>& jointNames);
+        void operator()(const std_msgs::Float64MultiArrayConstPtr& msg);
 
-	private:
-		ROSSimulationManager* sm;
-		ROSRobot* robot;
-		ServoControlMode mode;
-		std::vector<std::string> jointNames;
-	};
+    private:
+        ROSSimulationManager* sm;
+        ROSRobot* robot;
+        ServoControlMode mode;
+        std::vector<std::string> jointNames;
+    };
 
-	class JointCallback
-	{
-	public:
-		JointCallback(ROSSimulationManager* sm, ROSRobot* robot,
-					  ServoControlMode mode, const std::string& jointName);
-		void operator()(const std_msgs::Float64ConstPtr& msg);
+    class JointCallback
+    {
+    public:
+        JointCallback(ROSSimulationManager* sm, ROSRobot* robot,
+                      ServoControlMode mode, const std::string& jointName);
+        void operator()(const std_msgs::Float64ConstPtr& msg);
 
-	private:
-		ROSSimulationManager* sm;
-		ROSRobot* robot;
-		ServoControlMode mode;
-		std::string jointName;
-	};
+    private:
+        ROSSimulationManager* sm;
+        ROSRobot* robot;
+        ServoControlMode mode;
+        std::string jointName;
+    };
 
-	class VBSCallback
-	{
-	public:
-		VBSCallback(VariableBuoyancy* act);
-		void operator()(const std_msgs::Float64ConstPtr& msg);
+    class VBSCallback
+    {
+    public:
+        VBSCallback(VariableBuoyancy* act);
+        void operator()(const std_msgs::Float64ConstPtr& msg);
 
-	private:
-		VariableBuoyancy* act;
-	};
+    private:
+        VariableBuoyancy* act;
+    };
 
-	class TrajectoryCallback
-	{
-	public:
-		TrajectoryCallback(ManualTrajectory* tr);
-		void operator()(const nav_msgs::OdometryConstPtr& msg);
+    class TrajectoryCallback
+    {
+    public:
+        TrajectoryCallback(ManualTrajectory* tr);
+        void operator()(const nav_msgs::OdometryConstPtr& msg);
 
-	private:
-		ManualTrajectory* tr;
-	};
+    private:
+        ManualTrajectory* tr;
+    };
 
-	class ActuatorOriginCallback
-	{
-	public:
-		ActuatorOriginCallback(Actuator* act);
-		void operator()(const geometry_msgs::TransformConstPtr& msg);
+    class ActuatorOriginCallback
+    {
+    public:
+        ActuatorOriginCallback(Actuator* act);
+        void operator()(const geometry_msgs::TransformConstPtr& msg);
 
-	private:
-		Actuator* act;
-	};
+    private:
+        Actuator* act;
+    };
 
-	class SensorOriginCallback
-	{
-	public:
-		SensorOriginCallback(Sensor* sens);
-		void operator()(const geometry_msgs::TransformConstPtr& msg);
+    class SensorOriginCallback
+    {
+    public:
+        SensorOriginCallback(Sensor* sens);
+        void operator()(const geometry_msgs::TransformConstPtr& msg);
 
-	private:
-		Sensor* sens;
-	};
+    private:
+        Sensor* sens;
+    };
 
-	class FLSService
-	{
-	public:
-		FLSService(FLS* fls);
-		bool operator()(stonefish_ros::SonarSettings::Request& req, stonefish_ros::SonarSettings::Response& res);
+    class FLSService
+    {
+    public:
+        FLSService(FLS* fls);
+        bool operator()(stonefish_ros::SonarSettings::Request& req, stonefish_ros::SonarSettings::Response& res);
 
-	private:
-		FLS* fls;
-	};
+    private:
+        FLS* fls;
+    };
 
-	class SSSService
-	{
-	public:
-		SSSService(SSS* sss);
-		bool operator()(stonefish_ros::SonarSettings::Request& req, stonefish_ros::SonarSettings::Response& res);
+    class SSSService
+    {
+    public:
+        SSSService(SSS* sss);
+        bool operator()(stonefish_ros::SonarSettings::Request& req, stonefish_ros::SonarSettings::Response& res);
 
-	private:
-		SSS* sss;
-	};
+    private:
+        SSS* sss;
+    };
 
-	class MSISService
-	{
-	public:
-		MSISService(MSIS* msis);
-		bool operator()(stonefish_ros::SonarSettings2::Request& req, stonefish_ros::SonarSettings2::Response& res);
+    class MSISService
+    {
+    public:
+        MSISService(MSIS* msis);
+        bool operator()(stonefish_ros::SonarSettings2::Request& req, stonefish_ros::SonarSettings2::Response& res);
 
-	private:
-		MSIS* msis;
-	};
+    private:
+        MSIS* msis;
+    };
 }
 
 #endif

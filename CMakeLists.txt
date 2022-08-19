@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(stonefish_ros)
+project(stonefish_mvp)
 
 find_package(catkin REQUIRED COMPONENTS
   message_generation

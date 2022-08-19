@@ -1,6 +1,9 @@
-### stonefish_ros package for ROS
+### stonefish_mvp package for ROS
 
-This package delivers a ROS interface for the _Stonefish_ library. It also includes a standard simulator node, which loads the simulation scenario from a scenario description file (XML). The included parser extends the standard functionality of the _Stonefish_ library to enable ROS style search for files, resolution of arguments as well as a complete message interface. 
+Attention: This package is a modified version of stonefish_ros repository.
+
+
+This package delivers a ROS interface for the _Stonefish_ library. It also includes a standard simulator node, which loads the simulation scenario from a scenario description file (XML). The included parser extends the standard functionality of the _Stonefish_ library to enable ROS style search for files, resolution of arguments as well as a complete message interface.
 
 ### Installation
 

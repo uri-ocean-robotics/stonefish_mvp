@@ -289,10 +289,9 @@ bool ROSScenarioParser::ParseRobot(XMLElement* element)
         {
             if(a.actuator->getName().find(e->Attribute("name")) != std::string::npos)
             {
-                XMLElement* re = e->FirstChildElement("ros_subscriber");
-                if(re)
+                if((item = e->FirstChildElement("ros_subscriber")) != nullptr)
                 {
-                   rosSubTopicName = re->Attribute("topic");
+                   rosSubTopicName = item->Attribute("topic");
                 }
                 break;
             }
