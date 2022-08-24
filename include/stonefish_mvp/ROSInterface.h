@@ -1,12 +1,12 @@
-/*    
-    This file is a part of stonefish_ros.
+/*
+    This file is a part of stonefish_mvp.
 
-    stonefish_ros is free software: you can redistribute it and/or modify
+    stonefish_mvp is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    stonefish_ros is distributed in the hope that it will be useful,
+    stonefish_mvp is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
@@ -17,7 +17,7 @@
 
 //
 //  ROSInterface.h
-//  stonefish_ros
+//  stonefish_mvp
 //
 //  Created by Patryk Cieslak on 30/11/17.
 //  Copyright (c) 2017-2021 Patryk Cieslak. All rights reserved.
@@ -78,7 +78,7 @@ namespace sf
         static void PublishContact(ros::Publisher& pub, Contact* cnt);
         static void PublishUSBL(ros::Publisher& pub, ros::Publisher& pub_info, USBL* usbl);
         static void PublishTrajectoryState(ros::Publisher& odom, ros::Publisher& iter, AnimatedEntity* anim);
-        
+
         static std::pair<sensor_msgs::ImagePtr, sensor_msgs::CameraInfoPtr> GenerateCameraMsgPrototypes(Camera* cam, bool depth);
         static std::pair<sensor_msgs::ImagePtr, sensor_msgs::ImagePtr> GenerateFLSMsgPrototypes(FLS* fls);
         static std::pair<sensor_msgs::ImagePtr, sensor_msgs::ImagePtr> GenerateSSSMsgPrototypes(SSS* sss);

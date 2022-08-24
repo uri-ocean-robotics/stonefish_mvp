@@ -1,12 +1,12 @@
 /*
-    This file is a part of stonefish_ros.
+    This file is a part of stonefish_mvp.
 
-    stonefish_ros is free software: you can redistribute it and/or modify
+    stonefish_mvp is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    stonefish_ros is distributed in the hope that it will be useful,
+    stonefish_mvp is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
@@ -17,7 +17,7 @@
 
 //
 //  ROSSimulationManager.h
-//  stonefish_ros
+//  stonefish_mvp
 //
 //  Created by Patryk Cieslak on 17/09/19.
 //  Copyright (c) 2019-2021 Patryk Cieslak. All rights reserved.
@@ -48,10 +48,11 @@
 #include <nav_msgs/Odometry.h>
 // #include <cola2_msgs/Setpoints.h>
 #include <std_srvs/Trigger.h>
-#include <stonefish_ros/SonarSettings.h>
-#include <stonefish_ros/SonarSettings2.h>
+#include <stonefish_mvp/SonarSettings.h>
+#include <stonefish_mvp/SonarSettings2.h>
 #include <image_transport/image_transport.h>
-#include "stonefish_ros/ROSControlInterface.h"
+
+#include "stonefish_mvp/ROSControlInterface.h"
 
 namespace sf
 {
@@ -288,7 +289,7 @@ namespace sf
     {
     public:
         FLSService(FLS* fls);
-        bool operator()(stonefish_ros::SonarSettings::Request& req, stonefish_ros::SonarSettings::Response& res);
+        bool operator()(stonefish_mvp::SonarSettings::Request& req, stonefish_mvp::SonarSettings::Response& res);
 
     private:
         FLS* fls;
@@ -298,7 +299,7 @@ namespace sf
     {
     public:
         SSSService(SSS* sss);
-        bool operator()(stonefish_ros::SonarSettings::Request& req, stonefish_ros::SonarSettings::Response& res);
+        bool operator()(stonefish_mvp::SonarSettings::Request& req, stonefish_mvp::SonarSettings::Response& res);
 
     private:
         SSS* sss;
@@ -308,7 +309,7 @@ namespace sf
     {
     public:
         MSISService(MSIS* msis);
-        bool operator()(stonefish_ros::SonarSettings2::Request& req, stonefish_ros::SonarSettings2::Response& res);
+        bool operator()(stonefish_mvp::SonarSettings2::Request& req, stonefish_mvp::SonarSettings2::Response& res);
 
     private:
         MSIS* msis;

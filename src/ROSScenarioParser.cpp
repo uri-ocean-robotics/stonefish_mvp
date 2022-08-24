@@ -1,12 +1,12 @@
 /*
-    This file is a part of stonefish_ros.
+    This file is a part of stonefish_mvp.
 
-    stonefish_ros is free software: you can redistribute it and/or modify
+    stonefish_mvp is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    stonefish_ros is distributed in the hope that it will be useful,
+    stonefish_mvp is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
@@ -17,15 +17,15 @@
 
 //
 //  ROSScenarioParser.cpp
-//  stonefish_ros
+//  stonefish_mvp
 //
 //  Created by Patryk Cieslak on 17/09/19.
 //  Copyright (c) 2019-2021 Patryk Cieslak. All rights reserved.
 //
 
-#include "stonefish_ros/ROSScenarioParser.h"
-#include "stonefish_ros/ROSSimulationManager.h"
-#include "stonefish_ros/ROSInterface.h"
+#include "stonefish_mvp/ROSScenarioParser.h"
+#include "stonefish_mvp/ROSSimulationManager.h"
+#include "stonefish_mvp/ROSInterface.h"
 
 #include <Stonefish/core/Robot.h>
 #include <Stonefish/entities/AnimatedEntity.h>
@@ -62,9 +62,9 @@
 #include <visualization_msgs/MarkerArray.h>
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_types.h>
-#include <stonefish_ros/ThrusterState.h>
-#include <stonefish_ros/Int32Stamped.h>
-#include <stonefish_ros/BeaconInfo.h>
+#include <stonefish_mvp/ThrusterState.h>
+#include <stonefish_mvp/Int32Stamped.h>
+#include <stonefish_mvp/BeaconInfo.h>
 
 #include <ros/package.h>
 
@@ -427,7 +427,7 @@ bool ROSScenarioParser::ParseRobot(XMLElement* element)
         const char* topicSrv = nullptr;
 
         if(nThrusters > 0 && item->QueryStringAttribute("thrusters", &topicThrust) == XML_SUCCESS)
-            pubs[robot->getName() + "/thrusters"] = nh.advertise<stonefish_ros::ThrusterState>(std::string(topicThrust), 10);
+            pubs[robot->getName() + "/thrusters"] = nh.advertise<stonefish_mvp::ThrusterState>(std::string(topicThrust), 10);
 
         if(nServos > 0 && item->QueryStringAttribute("servos", &topicSrv) == XML_SUCCESS)
             pubs[robot->getName() + "/servos"] = nh.advertise<sensor_msgs::JointState>(std::string(topicSrv), 10);
@@ -481,7 +481,7 @@ bool ROSScenarioParser::ParseAnimated(XMLElement* element)
             return true;
         }
         pubs[nameStr + "/odometry"] = nh.advertise<nav_msgs::Odometry>(std::string(topic), 10);
-        pubs[nameStr + "/iteration"] = nh.advertise<stonefish_ros::Int32Stamped>(std::string(topic) + "/iteration", 10);
+        pubs[nameStr + "/iteration"] = nh.advertise<stonefish_mvp::Int32Stamped>(std::string(topic) + "/iteration", 10);
     }
 
     return true;
@@ -725,7 +725,7 @@ Sensor* ROSScenarioParser::ParseSensor(XMLElement* element, const std::string& n
                         FLS* fls = (FLS*)sens;
                         fls->InstallNewDataHandler(std::bind(&ROSSimulationManager::FLSScanReady, sim, std::placeholders::_1));
                         sonarMsgProto[sensorName] = ROSInterface::GenerateFLSMsgPrototypes(fls);
-                        srvs[sensorName] = nh.advertiseService<stonefish_ros::SonarSettings::Request, stonefish_ros::SonarSettings::Response>(topicStr + "/settings", FLSService(fls));
+                        srvs[sensorName] = nh.advertiseService<stonefish_mvp::SonarSettings::Request, stonefish_mvp::SonarSettings::Response>(topicStr + "/settings", FLSService(fls));
                         img_pubs[sensorName] = it.advertise(topicStr + "/image", queueSize);
                         // pubs[sensorName] = nh.advertise<sensor_msgs::Image>(topicStr + "/image", queueSize);
                         img_pubs[sensorName + "/display"] = it.advertise(topicStr + "/display", queueSize);
@@ -738,7 +738,7 @@ Sensor* ROSScenarioParser::ParseSensor(XMLElement* element, const std::string& n
                         SSS* sss = (SSS*)sens;
                         sss->InstallNewDataHandler(std::bind(&ROSSimulationManager::SSSScanReady, sim, std::placeholders::_1));
                         sonarMsgProto[sensorName] = ROSInterface::GenerateSSSMsgPrototypes(sss);
-                        srvs[sensorName] = nh.advertiseService<stonefish_ros::SonarSettings::Request, stonefish_ros::SonarSettings::Response>(topicStr + "/settings", SSSService(sss));
+                        srvs[sensorName] = nh.advertiseService<stonefish_mvp::SonarSettings::Request, stonefish_mvp::SonarSettings::Response>(topicStr + "/settings", SSSService(sss));
                         img_pubs[sensorName] = it.advertise(topicStr + "/image", queueSize);
                         // pubs[sensorName] = nh.advertise<sensor_msgs::Image>(topicStr + "/image", queueSize);
                         img_pubs[sensorName + "/display"] = it.advertise(topicStr + "/display", queueSize);
@@ -751,7 +751,7 @@ Sensor* ROSScenarioParser::ParseSensor(XMLElement* element, const std::string& n
                         MSIS* msis = (MSIS*)sens;
                         msis->InstallNewDataHandler(std::bind(&ROSSimulationManager::MSISScanReady, sim, std::placeholders::_1));
                         sonarMsgProto[sensorName] = ROSInterface::GenerateMSISMsgPrototypes(msis);
-                        srvs[sensorName] = nh.advertiseService<stonefish_ros::SonarSettings2::Request, stonefish_ros::SonarSettings2::Response>(topicStr + "/settings", MSISService(msis));
+                        srvs[sensorName] = nh.advertiseService<stonefish_mvp::SonarSettings2::Request, stonefish_mvp::SonarSettings2::Response>(topicStr + "/settings", MSISService(msis));
                         img_pubs[sensorName] = it.advertise(topicStr + "/image", queueSize);
                         // pubs[sensorName] = nh.advertise<sensor_msgs::Image>(topicStr + "/image", queueSize);
                         img_pubs[sensorName + "/display"] = it.advertise(topicStr + "/display", queueSize);
@@ -810,7 +810,7 @@ Comm* ROSScenarioParser::ParseComm(XMLElement* element, const std::string& nameP
             case CommType::USBL:
             {
                 pubs[commName] = nh.advertise<visualization_msgs::MarkerArray>(topicStr, 10);
-                pubs[commName + "/beacon_info"] = nh.advertise<stonefish_ros::BeaconInfo>(topicStr + "/beacon_info", 10);
+                pubs[commName + "/beacon_info"] = nh.advertise<stonefish_mvp::BeaconInfo>(topicStr + "/beacon_info", 10);
             }
                 break;
 

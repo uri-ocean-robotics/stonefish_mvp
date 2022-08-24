@@ -46,7 +46,7 @@ add_compile_options(${Stonefish_CFLAGS})
 
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES stonefish_ros
+  LIBRARIES stonefish_mvp
   CATKIN_DEPENDS geometry_msgs
                  nav_msgs
                  sensor_msgs
@@ -76,18 +76,18 @@ link_directories(
 )
 
 #Library
-add_library(stonefish_ros STATIC
-src/ROSInterface.cpp
-src/ROSSimulationManager.cpp
-src/ROSScenarioParser.cpp
-src/ROSControlInterface.cpp
+add_library(${PROJECT_NAME}
+	src/ROSInterface.cpp
+	src/ROSSimulationManager.cpp
+	src/ROSScenarioParser.cpp
+	src/ROSControlInterface.cpp
 )
-add_dependencies(stonefish_ros ${${PROJECT_NAME}_EXPORTED_TARGETS})
-target_link_libraries(stonefish_ros ${catkin_LIBRARIES} ${Stonefish_LIBRARIES})
+add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${Stonefish_LIBRARIES})
 
 #Universal simulators with XML parser
 add_executable(parsed_simulator src/parsed_simulator.cpp)
-target_link_libraries(parsed_simulator ${catkin_LIBRARIES} ${Stonefish_LIBRARIES} stonefish_ros)
+target_link_libraries(parsed_simulator ${catkin_LIBRARIES} ${Stonefish_LIBRARIES} ${PROJECT_NAME})
 
 add_executable(parsed_simulator_nogpu src/parsed_simulator_nogpu.cpp)
-target_link_libraries(parsed_simulator_nogpu ${catkin_LIBRARIES} ${Stonefish_LIBRARIES} stonefish_ros)
+target_link_libraries(parsed_simulator_nogpu ${catkin_LIBRARIES} ${Stonefish_LIBRARIES} ${PROJECT_NAME})

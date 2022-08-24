@@ -1,12 +1,12 @@
 /*
-    This file is a part of stonefish_ros.
+    This file is a part of stonefish_mvp.
 
-    stonefish_ros is free software: you can redistribute it and/or modify
+    stonefish_mvp is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    stonefish_ros is distributed in the hope that it will be useful,
+    stonefish_mvp is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
@@ -17,16 +17,16 @@
 
 //
 //  ROSSimulationManager.cpp
-//  stonefish_ros
+//  stonefish_mvp
 //
 //  Created by Patryk Cieslak on 17/09/19.
 //  Copyright (c) 2019-2021 Patryk Cieslak. All rights reserved.
 //
 
-#include "stonefish_ros/ROSSimulationManager.h"
-#include "stonefish_ros/ROSScenarioParser.h"
-#include "stonefish_ros/ROSInterface.h"
-#include "stonefish_ros/ThrusterState.h"
+#include "stonefish_mvp/ROSSimulationManager.h"
+#include "stonefish_mvp/ROSScenarioParser.h"
+#include "stonefish_mvp/ROSInterface.h"
+#include "stonefish_mvp/ThrusterState.h"
 
 #include <Stonefish/core/Robot.h>
 #include <Stonefish/entities/SolidEntity.h>
@@ -136,7 +136,7 @@ void ROSSimulationManager::BuildScenario()
     bool success = parser.Parse(scnFilePath);
 
     //Save log
-    std::string logFilePath = ros::file_log::getLogDirectory() + "/stonefish_ros_parser.log";
+    std::string logFilePath = ros::file_log::getLogDirectory() + "/stonefish_mvp_parser.log";
     bool success2 = parser.SaveLog(logFilePath);
 
     if(!success)
@@ -344,7 +344,7 @@ void ROSSimulationManager::SimulationStepCompleted(Scalar timeStep)
             sensor_msgs::JointState msg;
             msg.header.stamp = ros::Time::now();
             msg.header.frame_id = rosRobots[i]->robot->getName();
-            
+
             while((actuator = rosRobots[i]->robot->getActuator(aID++)) != nullptr)
             {
                 if(actuator->getType() == ActuatorType::SERVO)
@@ -367,7 +367,7 @@ void ROSSimulationManager::SimulationStepCompleted(Scalar timeStep)
             unsigned int thID = 0;
             Actuator* actuator;
             Thruster* th;
-            stonefish_ros::ThrusterState msg;
+            stonefish_mvp::ThrusterState msg;
             msg.header.stamp = ros::Time::now();
             msg.header.frame_id = rosRobots[i]->robot->getName();
             msg.setpoint.resize(rosRobots[i]->thrusterSetpoints.size());
@@ -473,7 +473,7 @@ void ROSSimulationManager::SimulationStepCompleted(Scalar timeStep)
         size_t lID = 0;
         SolidEntity* link;
         Vector3 Fb, Tb, Fd, Td, Fs, Ts;
-    
+
         while((link = r->getLink(lID++)) != nullptr)
         {
             link->getHydrodynamicForces(Fb, Tb, Fd, Td, Fs, Ts);
@@ -789,7 +789,7 @@ FLSService::FLSService(FLS* fls) : fls(fls)
 {
 }
 
-bool FLSService::operator()(stonefish_ros::SonarSettings::Request& req, stonefish_ros::SonarSettings::Response& res)
+bool FLSService::operator()(stonefish_mvp::SonarSettings::Request& req, stonefish_mvp::SonarSettings::Response& res)
 {
     if(req.range_min <= 0 || req.range_max <= 0 || req.gain <= 0 || req.range_min >= req.range_max)
     {
@@ -811,7 +811,7 @@ SSSService::SSSService(SSS* sss) : sss(sss)
 {
 }
 
-bool SSSService::operator()(stonefish_ros::SonarSettings::Request& req, stonefish_ros::SonarSettings::Response& res)
+bool SSSService::operator()(stonefish_mvp::SonarSettings::Request& req, stonefish_mvp::SonarSettings::Response& res)
 {
     if(req.range_min <= 0 || req.range_max <= 0 || req.gain <= 0 || req.range_min >= req.range_max)
     {
@@ -833,7 +833,7 @@ MSISService::MSISService(MSIS* msis) : msis(msis)
 {
 }
 
-bool MSISService::operator()(stonefish_ros::SonarSettings2::Request& req, stonefish_ros::SonarSettings2::Response& res)
+bool MSISService::operator()(stonefish_mvp::SonarSettings2::Request& req, stonefish_mvp::SonarSettings2::Response& res)
 {
     if(req.range_min <= 0 || req.range_max <= 0 || req.gain <= 0
        || req.range_min >= req.range_max

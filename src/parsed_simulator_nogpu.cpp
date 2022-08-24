@@ -1,12 +1,12 @@
-/*    
-    This file is a part of stonefish_ros.
+/*
+    This file is a part of stonefish_mvp.
 
-    stonefish_ros is free software: you can redistribute it and/or modify
+    stonefish_mvp is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    stonefish_ros is distributed in the hope that it will be useful,
+    stonefish_mvp is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
@@ -17,7 +17,7 @@
 
 //
 //  parsed_simulator_nogpu.cpp
-//  stonefish_ros
+//  stonefish_mvp
 //
 //  Created by Patryk Cieslak on 16/12/20.
 //  Copyright (c) 2020 Patryk Cieslak. All rights reserved.
@@ -26,7 +26,7 @@
 #include <ros/ros.h>
 #include <Stonefish/core/ConsoleSimulationApp.h>
 #include <Stonefish/utils/SystemUtil.hpp>
-#include "stonefish_ros/ROSSimulationManager.h"
+#include "stonefish_mvp/ROSSimulationManager.h"
 
 int main(int argc, char **argv)
 {
@@ -43,9 +43,9 @@ int main(int argc, char **argv)
     std::string dataDirPath = std::string(argv[1]) + "/";
     std::string scenarioPath(argv[2]);
     sf::Scalar rate = atof(argv[3]);
-	
+
 	sf::ROSSimulationManager manager(rate, scenarioPath);
-    sf::ConsoleSimulationApp app("Stonefish Simulator", dataDirPath, &manager); 
+    sf::ConsoleSimulationApp app("Stonefish Simulator", dataDirPath, &manager);
 	app.Run();
 
 	return 0;

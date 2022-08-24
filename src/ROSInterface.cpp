@@ -1,12 +1,12 @@
 /*
-    This file is a part of stonefish_ros.
+    This file is a part of stonefish_mvp.
 
-    stonefish_ros is free software: you can redistribute it and/or modify
+    stonefish_mvp is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    stonefish_ros is distributed in the hope that it will be useful,
+    stonefish_mvp is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
@@ -17,13 +17,13 @@
 
 //
 //  ROSInterface.cpp
-//  stonefish_ros
+//  stonefish_mvp
 //
 //  Created by Patryk Cieslak on 30/11/17.
 //  Copyright (c) 2017-2021 Patryk Cieslak. All rights reserved.
 //
 
-#include "stonefish_ros/ROSInterface.h"
+#include "stonefish_mvp/ROSInterface.h"
 
 #include <Stonefish/sensors/Sample.h>
 #include <Stonefish/sensors/scalar/Accelerometer.h>
@@ -70,8 +70,8 @@
 #include <pcl/point_types.h>
 #include <pcl_ros/point_cloud.h>
 
-#include <stonefish_ros/Int32Stamped.h>
-#include <stonefish_ros/BeaconInfo.h>
+#include <stonefish_mvp/Int32Stamped.h>
+#include <stonefish_mvp/BeaconInfo.h>
 
 #include <Eigen/Core>
 #include <Eigen/Dense>
@@ -535,7 +535,7 @@ void ROSInterface::PublishUSBL(ros::Publisher& pub, ros::Publisher& pub_info, US
 
     visualization_msgs::MarkerArray msg;
     visualization_msgs::Marker marker;
-    stonefish_ros::BeaconInfo info;
+    stonefish_mvp::BeaconInfo info;
 
     marker.header.frame_id = usbl->getName();
     marker.header.stamp = ros::Time::now();
@@ -611,7 +611,7 @@ void ROSInterface::PublishTrajectoryState(ros::Publisher& odom, ros::Publisher& 
     odom.publish(msg);
 
     //Iteration message
-    stonefish_ros::Int32Stamped msg2;
+    stonefish_mvp::Int32Stamped msg2;
     msg2.header = msg.header;
     msg2.data = (int32_t)tr->getPlaybackIteration();
     iter.publish(msg2);

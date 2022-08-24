@@ -1,12 +1,12 @@
-/*    
-    This file is a part of stonefish_ros.
+/*
+    This file is a part of stonefish_mvp.
 
-    stonefish_ros is free software: you can redistribute it and/or modify
+    stonefish_mvp is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    stonefish_ros is distributed in the hope that it will be useful,
+    stonefish_mvp is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
@@ -17,20 +17,20 @@
 
 //
 //  ROSControlInterface.cpp
-//  stonefish_ros
+//  stonefish_mvp
 //
 //  Created by Patryk Cieslak on 27/07/22.
 //  Copyright (c) 2022 Patryk Cieslak. All rights reserved.
 //
 
-#include "stonefish_ros/ROSControlInterface.h"
+#include "stonefish_mvp/ROSControlInterface.h"
 
 namespace sf
 {
 
 ROSControlInterface::ROSControlInterface(Robot* robot, const std::vector<std::string>& jointNames, ServoControlMode ifType, const std::string& _namespace)
     : robot(robot), mode(ifType), nh(_namespace)
-{    
+{
     //Find actuators connected to joints
     for(size_t i=0; i<jointNames.size(); ++i)
     {
@@ -40,7 +40,7 @@ ROSControlInterface::ROSControlInterface(Robot* robot, const std::vector<std::st
         {
             if(act->getType() == ActuatorType::SERVO && ((Servo*)act)->getJointName() == jointNames[i])
             {
-                actuators.push_back(act->getName());   
+                actuators.push_back(act->getName());
                 break;
             }
         }
@@ -71,7 +71,7 @@ ROSControlInterface::ROSControlInterface(Robot* robot, const std::vector<std::st
             registerInterface((hardware_interface::PositionJointInterface*)jcif);
         }
             break;
-        
+
         case ServoControlMode::VELOCITY_CTRL:
         case ServoControlMode::TORQUE_CTRL: // Effort interface not implemented at this time!
         {
@@ -101,7 +101,7 @@ void ROSControlInterface::read()
 {
     for(size_t i=0; i<actuators.size(); ++i)
     {
-        Servo* srv = (Servo*)robot->getActuator(actuators[i]);    
+        Servo* srv = (Servo*)robot->getActuator(actuators[i]);
         eff[i] = srv->getEffort();
         vel[i] = srv->getVelocity();
         pos[i] = srv->getPosition();
