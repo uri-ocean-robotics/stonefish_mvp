@@ -640,11 +640,13 @@ Sensor* ROSScenarioParser::ParseSensor(XMLElement* element, const std::string& n
                          */
 
                         //Second topic with odometry
-                        const char* odomTopic = nullptr;
-                        if(item->QueryStringAttribute("odometry_topic", &odomTopic) == XML_SUCCESS)
+                        const char* secondTopic = nullptr;
+                        XMLElement* it;
+                        if((it = element->FirstChildElement("odometry_topic")) != nullptr
+                            && it->QueryStringAttribute("topic", &secondTopic) == XML_SUCCESS)
                         {
-                            std::string odomTopicStr = std::string(odomTopic);
-                            pubs[sensorName + "/odometry"] = nh.advertise<nav_msgs::Odometry>(odomTopicStr, queueSize);
+                            std::string secondTopicStr = std::string(secondTopic);
+                            pubs[sensorName + "/odometry"] = nh.advertise<nav_msgs::Odometry>(secondTopicStr, queueSize);
                         }
                     }
                         break;
@@ -657,12 +659,13 @@ Sensor* ROSScenarioParser::ParseSensor(XMLElement* element, const std::string& n
                     {
                         pubs[sensorName] = nh.advertise<sensor_msgs::LaserScan>(topicStr, queueSize);
 
-                        //Second topic with point cloud
-                        const char* pclTopic = nullptr;
-                        if(item->QueryStringAttribute("pcl_topic", &pclTopic) == XML_SUCCESS)
+                        const char* secondTopic = nullptr;
+                        XMLElement* it;
+                        if((it = element->FirstChildElement("pcl_topic")) != nullptr
+                            && it->QueryStringAttribute("topic", &secondTopic) == XML_SUCCESS)
                         {
-                            std::string pclTopicStr = std::string(pclTopic);
-                            pubs[sensorName + "/pcl"] = nh.advertise<pcl::PointCloud<pcl::PointXYZ>>(pclTopicStr, queueSize);
+                            std::string secondTopicStr = std::string(secondTopic);
+                            pubs[sensorName + "/pcl"] = nh.advertise<pcl::PointCloud<pcl::PointXYZ>>(secondTopicStr, queueSize);
                         }
                     }
                         break;

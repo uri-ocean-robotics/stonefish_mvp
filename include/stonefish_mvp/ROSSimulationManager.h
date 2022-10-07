@@ -51,7 +51,7 @@
 #include <stonefish_mvp/SonarSettings.h>
 #include <stonefish_mvp/SonarSettings2.h>
 #include <image_transport/image_transport.h>
-
+#include <rosgraph_msgs/Clock.h>
 #include "stonefish_mvp/ROSControlInterface.h"
 
 namespace sf
@@ -183,6 +183,10 @@ namespace sf
         std::map<std::string, std::pair<sensor_msgs::ImagePtr, sensor_msgs::ImagePtr>> sonarMsgPrototypes;
         std::vector<ROSRobot*> rosRobots;
         std::vector<ROSControlInterface*> controlIfs;
+
+        ros::Publisher clockPub;
+
+        uint64_t simTime;
     };
 
     //Callback functors

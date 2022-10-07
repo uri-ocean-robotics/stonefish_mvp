@@ -24,6 +24,8 @@
 //
 
 #include "stonefish_mvp/ROSInterface.h"
+#include "stonefish_mvp/ROSGlobal.h"
+
 
 #include <Stonefish/sensors/Sample.h>
 #include <Stonefish/sensors/scalar/Accelerometer.h>
@@ -97,7 +99,7 @@ void ROSInterface::PublishAccelerometer(ros::Publisher& pub, Accelerometer* acc)
                                   acc->getSensorChannelDescription(2).stdDev);
 
     geometry_msgs::AccelWithCovarianceStamped msg;
-    msg.header.stamp = ros::Time::now();
+    msg.header.stamp.fromNSec(SIMULATION_TIME * 1000);
     msg.header.frame_id = acc->getName();
     msg.accel.accel.linear.x = s.getValue(0);
     msg.accel.accel.linear.y = s.getValue(1);
@@ -116,7 +118,7 @@ void ROSInterface::PublishGyroscope(ros::Publisher& pub, Gyroscope* gyro)
                                       gyro->getSensorChannelDescription(2).stdDev);
 
     geometry_msgs::TwistWithCovarianceStamped msg;
-    msg.header.stamp = ros::Time::now();
+    msg.header.stamp.fromNSec(SIMULATION_TIME * 1000);
     msg.header.frame_id = gyro->getName();
     msg.twist.twist.angular.x = s.getValue(0);
     msg.twist.twist.angular.y = s.getValue(1);
@@ -143,7 +145,7 @@ void ROSInterface::PublishIMU(ros::Publisher& pub, IMU* imu)
                                 imu->getSensorChannelDescription(8).stdDev);
     //Variance is sigma^2!
     sensor_msgs::Imu msg;
-    msg.header.stamp = ros::Time::now();
+    msg.header.stamp.fromNSec(SIMULATION_TIME * 1000);
     msg.header.frame_id = imu->getName();
     msg.orientation.x = quat.x();
     msg.orientation.y = quat.y();
@@ -171,7 +173,7 @@ void ROSInterface::PublishPressure(ros::Publisher& pub, Pressure* press)
 {
     Sample s = press->getLastSample();
     sensor_msgs::FluidPressure msg;
-    msg.header.stamp = ros::Time::now();
+    msg.header.stamp.fromNSec(SIMULATION_TIME * 1000);
     msg.header.frame_id = press->getName();
     msg.fluid_pressure = s.getValue(0);
     msg.variance = press->getSensorChannelDescription(0).stdDev;
@@ -189,7 +191,7 @@ void ROSInterface::PublishDVL(ros::Publisher& pub, DVL* dvl)
     //Publish DVL message
     geometry_msgs::TwistWithCovarianceStamped msg;
 
-    msg.header.stamp = ros::Time::now();
+    msg.header.stamp.fromNSec(SIMULATION_TIME * 1000);
     msg.header.frame_id = dvl->getName();
     msg.twist.twist.linear.x = s.getValue(0);
     msg.twist.twist.linear.y = s.getValue(1);
@@ -212,7 +214,7 @@ void ROSInterface::PublishDVLAltitude(ros::Publisher& pub, DVL* dvl)
     Scalar beamAngle = dvl->getBeamAngle();
     //Publish range message
     sensor_msgs::Range msg;
-    msg.header.stamp = ros::Time::now();
+    msg.header.stamp.fromNSec(SIMULATION_TIME * 1000);
     msg.header.frame_id = dvl->getName() + "_altitude";
     msg.radiation_type = msg.ULTRASOUND;
     msg.field_of_view = beamAngle*2;
@@ -227,7 +229,7 @@ void ROSInterface::PublishGPS(ros::Publisher& pub, GPS* gps)
     Sample s = gps->getLastSample();
 
     sensor_msgs::NavSatFix msg;
-    msg.header.stamp = ros::Time::now();
+    msg.header.stamp.fromNSec(SIMULATION_TIME * 1000);
     msg.header.frame_id = gps->getName();
     msg.status.service = msg.status.SERVICE_GPS;
 
@@ -256,7 +258,7 @@ void ROSInterface::PublishOdometry(ros::Publisher& pub, Odometry* odom)
 {
     Sample s = odom->getLastSample();
     nav_msgs::Odometry msg;
-    msg.header.stamp = ros::Time::now();
+    msg.header.stamp.fromNSec(SIMULATION_TIME * 1000);
     msg.header.frame_id = "world_ned";
     msg.child_frame_id = odom->getName();
     msg.pose.pose.position.x = s.getValue(0);
@@ -279,7 +281,7 @@ void ROSInterface::PublishINSOdometry(ros::Publisher& pub, INS* ins)
 {
     Sample s = ins->getLastSample();
     nav_msgs::Odometry msg;
-    msg.header.stamp = ros::Time::now();
+    msg.header.stamp.fromNSec(SIMULATION_TIME * 1000);
     msg.header.frame_id = "world_ned";
     msg.child_frame_id = ins->getName();
     msg.pose.pose.position.x = s.getValue(0);
@@ -303,7 +305,7 @@ void ROSInterface::PublishForceTorque(ros::Publisher& pub, ForceTorque* ft)
 {
     Sample s = ft->getLastSample();
     geometry_msgs::WrenchStamped msg;
-    msg.header.stamp = ros::Time::now();
+    msg.header.stamp.fromNSec(SIMULATION_TIME * 1000);
     msg.header.frame_id = ft->getName();
     msg.wrench.force.x = s.getValue(0);
     msg.wrench.force.y = s.getValue(1);
@@ -318,7 +320,7 @@ void ROSInterface::PublishEncoder(ros::Publisher& pub, RotaryEncoder* enc)
 {
     Sample s = enc->getLastSample();
     sensor_msgs::JointState msg;
-    msg.header.stamp = ros::Time::now();
+    msg.header.stamp.fromNSec(SIMULATION_TIME * 1000);
     msg.header.frame_id = enc->getName();
     msg.name.resize(1);
     msg.position.resize(1);
@@ -339,7 +341,7 @@ void ROSInterface::PublishMultibeam(ros::Publisher& pub, Multibeam* mb)
     uint32_t angSteps = distances.size();
 
     sensor_msgs::LaserScan msg;
-    msg.header.stamp = ros::Time::now();
+    msg.header.stamp.fromNSec(SIMULATION_TIME * 1000);
     msg.header.frame_id = mb->getName();
 
     msg.angle_min = -angRange/Scalar(2); // start angle of the scan [rad]
@@ -383,7 +385,9 @@ void ROSInterface::PublishMultibeamPCL(ros::Publisher& pub, Multibeam* mb)
             msg->push_back(pt);
         }
 
-    pcl_conversions::toPCL(ros::Time::now(), msg->header.stamp);
+    auto t = ros::Time();
+    t.fromNSec(SIMULATION_TIME * 1000);
+    pcl_conversions::toPCL(t, msg->header.stamp);
     try
     {
         pub.publish(msg);
@@ -404,7 +408,7 @@ void ROSInterface::PublishProfiler(ros::Publisher& pub, Profiler* prof)
     SensorChannel channel = prof->getSensorChannelDescription(1); // range channel
 
     sensor_msgs::LaserScan msg;
-    msg.header.stamp = ros::Time::now();
+    msg.header.stamp.fromNSec(SIMULATION_TIME * 1000);
     msg.header.frame_id = prof->getName();
 
     msg.angle_min = hist->front().getValue(0);
@@ -476,7 +480,9 @@ void ROSInterface::PublishMultibeam2(ros::Publisher& pub, Multibeam2* mb)
         }
     }
 
-    pcl_conversions::toPCL(ros::Time::now(), msg->header.stamp);
+    auto t = ros::Time();
+    t.fromNSec(SIMULATION_TIME * 1000);
+    pcl_conversions::toPCL(t, msg->header.stamp);
     try
     {
         pub.publish(msg);
@@ -501,7 +507,7 @@ void ROSInterface::PublishContact(ros::Publisher& pub, Contact* cnt)
     //Publish marker message
     visualization_msgs::Marker msg;
     msg.header.frame_id = "world_ned";
-    msg.header.stamp = ros::Time::now();
+    msg.header.stamp.fromNSec(SIMULATION_TIME * 1000);
     msg.ns = cnt->getName();
     msg.id = 0;
     msg.type = visualization_msgs::Marker::ARROW;
@@ -538,7 +544,7 @@ void ROSInterface::PublishUSBL(ros::Publisher& pub, ros::Publisher& pub_info, US
     stonefish_mvp::BeaconInfo info;
 
     marker.header.frame_id = usbl->getName();
-    marker.header.stamp = ros::Time::now();
+    marker.header.stamp.fromNSec(SIMULATION_TIME * 1000);
     info.header.frame_id = marker.header.frame_id;
     info.header.stamp = marker.header.stamp;
 
@@ -593,7 +599,7 @@ void ROSInterface::PublishTrajectoryState(ros::Publisher& odom, ros::Publisher& 
     //Odometry message
     nav_msgs::Odometry msg;
     msg.header.frame_id = "world_ned";
-    msg.header.stamp = ros::Time::now();
+    msg.header.stamp.fromNSec(SIMULATION_TIME * 1000);
     msg.child_frame_id = anim->getName();
     msg.pose.pose.position.x = p.x();
     msg.pose.pose.position.y = p.y();

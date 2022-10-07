@@ -27,6 +27,7 @@
 #include "stonefish_mvp/ROSScenarioParser.h"
 #include "stonefish_mvp/ROSInterface.h"
 #include "stonefish_mvp/ThrusterState.h"
+#include "stonefish_mvp/ROSGlobal.h"
 
 #include <Stonefish/core/Robot.h>
 #include <Stonefish/entities/SolidEntity.h>
@@ -58,16 +59,25 @@
 #include <Stonefish/actuators/Servo.h>
 #include <Stonefish/utils/SystemUtil.hpp>
 
+#include "chrono"
+#include "thread"
+
 #include <ros/file_log.h>
 
 namespace sf
 {
+
+uint64_t SIMULATION_TIME = 0;
+
 
 ROSSimulationManager::ROSSimulationManager(Scalar stepsPerSecond, std::string scenarioFilePath)
 	: SimulationManager(stepsPerSecond, SolverType::SOLVER_SI, CollisionFilteringType::COLLISION_EXCLUSIVE), scnFilePath(scenarioFilePath), nh("~"), it(nh), spinner(4)
 {
     srvECurrents = nh.advertiseService("enable_currents", &ROSSimulationManager::EnableCurrents, this);
     srvDCurrents = nh.advertiseService("disable_currents", &ROSSimulationManager::DisableCurrents, this);
+
+    clockPub = nh.advertise<rosgraph_msgs::Clock>("/clock", 1);
+    // simTime = 0;
 }
 
 ROSSimulationManager::~ROSSimulationManager()
@@ -76,12 +86,15 @@ ROSSimulationManager::~ROSSimulationManager()
 
 uint64_t ROSSimulationManager::getSimulationClock()
 {
-    return ros::Time::now().toNSec()/1000;
+    // Get the simulation clock calculated with realtime factor
+    return (uint64_t)ceil(getRealtimeFactor() * (Scalar)GetTimeInMicroseconds());
 }
 
 void ROSSimulationManager::SimulationClockSleep(uint64_t us)
 {
-    ros::Duration(0, (int32_t)us*1000).sleep();
+    // Sleep as necessery
+    uint64_t t = (uint64_t)ceil((Scalar)us/getRealtimeFactor());
+    std::this_thread::sleep_for(std::chrono::microseconds(t));
 }
 
 ros::NodeHandle& ROSSimulationManager::getNodeHandle()
@@ -189,6 +202,15 @@ void ROSSimulationManager::AddROSRobot(ROSRobot* robot)
 
 void ROSSimulationManager::SimulationStepCompleted(Scalar timeStep)
 {
+
+    // Set the simulation time
+    SIMULATION_TIME = getSimulationClock();
+
+    // Publish the simulated time
+    rosgraph_msgs::Clock m;
+    m.clock.fromNSec(SIMULATION_TIME * 1000);
+    clockPub.publish(m);
+
 	////////////////////////////////////////SENSORS//////////////////////////////////////////////
     unsigned int id = 0;
     Sensor* sensor;

@@ -16,7 +16,8 @@ find_package(catkin REQUIRED COMPONENTS
   pcl_conversions
   image_transport
   controller_manager
-	seal_msgs
+	mvp_msgs
+  rosgraph_msgs
 )
 
 find_package(PkgConfig REQUIRED)
@@ -61,7 +62,8 @@ catkin_package(
                  pcl_ros
                  image_transport
                  controller_manager
-								 seal_msgs
+								 mvp_msgs
+                 rosgraph_msgs
 	# DEPENDS Stonefish
 )
 
@@ -86,8 +88,18 @@ add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${Stonefish_LIBRARIES})
 
 #Universal simulators with XML parser
-add_executable(parsed_simulator src/parsed_simulator.cpp)
+add_executable(parsed_simulator src/parsed_simulator.cpp
+	src/ROSInterface.cpp
+	src/ROSSimulationManager.cpp
+	src/ROSScenarioParser.cpp
+	src/ROSControlInterface.cpp
+)
 target_link_libraries(parsed_simulator ${catkin_LIBRARIES} ${Stonefish_LIBRARIES} ${PROJECT_NAME})
 
-add_executable(parsed_simulator_nogpu src/parsed_simulator_nogpu.cpp)
+add_executable(parsed_simulator_nogpu src/parsed_simulator_nogpu.cpp
+	src/ROSInterface.cpp
+	src/ROSSimulationManager.cpp
+	src/ROSScenarioParser.cpp
+	src/ROSControlInterface.cpp
+)
 target_link_libraries(parsed_simulator_nogpu ${catkin_LIBRARIES} ${Stonefish_LIBRARIES} ${PROJECT_NAME})
