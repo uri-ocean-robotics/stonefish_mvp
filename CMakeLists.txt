@@ -16,7 +16,6 @@ find_package(catkin REQUIRED COMPONENTS
   pcl_conversions
   image_transport
   controller_manager
-	mvp_msgs
   rosgraph_msgs
 )
 
@@ -62,7 +61,7 @@ catkin_package(
                  pcl_ros
                  image_transport
                  controller_manager
-								 mvp_msgs
+								 # mvp_msgs
                  rosgraph_msgs
 	# DEPENDS Stonefish
 )
