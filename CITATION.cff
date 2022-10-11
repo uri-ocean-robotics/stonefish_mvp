@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Cieślak
+    given-names: Patryk
+title: >-
+  Stonefish: An Advanced Open-Source Simulation Tool Designed
+  for Marine Robotics, With a ROS Interface
+doi: 10.1109/OCEANSE.2019.8867434
+year: 2019
+license: GPLv3
+proceedings: OCEANS 2019 - Marseille
