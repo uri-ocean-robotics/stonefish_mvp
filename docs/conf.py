@@ -1,22 +1,13 @@
-# -*- coding: utf-8 -*-
-#
 # Configuration file for the Sphinx documentation builder.
 #
-# This file does only contain a selection of the most common options. For a
-# full list see the documentation:
-# http://www.sphinx-doc.org/en/master/config
+# For the full list of built-in configuration values, see the documentation:
+# https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-# -- Path setup --------------------------------------------------------------
-
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+# -- Project information -----------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 import sphinx_rtd_theme
+import myst_parser
 
 # -- Project information -----------------------------------------------------
 
@@ -31,30 +22,33 @@ release = u'1.3.0'
 
 
 # -- General configuration ---------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-# If your documentation needs a minimal Sphinx version, state it here.
-#
-# needs_sphinx = '1.0'
-
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
     'sphinx.ext.imgmath',
     'sphinx.ext.githubpages',
     'sphinx_rtd_theme',
+    'sphinx.ext.autosectionlabel',
+    'myst_parser',
+    'hoverxref.extension',
 ]
 
-# Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+myst_enable_extensions = [
+    "amsmath",
+    "dollarmath"
+]
+
+# templates_path = ['_templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
-# source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}
 
 # The master toctree document.
 master_doc = 'index'
@@ -121,7 +115,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'stonefish_ros_doc'
+htmlhelp_basename = 'stonefish_mvp_doc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -148,7 +142,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'stonefish_ros.tex', u'Documentation of stonefish_ros',
+    (master_doc, 'stonefish_mvp.tex', u'Documentation of stonefish_mvp',
      u'Patryk Cieślak', 'manual'),
 ]
 
@@ -158,7 +152,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'stonefish_ros', u'Documentation of stonefish_ros',
+    (master_doc, 'stonefish_mvp', u'Documentation of stonefish_mvp',
      [author], 1)
 ]
 
@@ -169,8 +163,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'stonefish_ros', u'Documentation of stonefish_ros',
-     author, 'stonefish_ros', 'ROS package for Stonefish library.',
+    (master_doc, 'stonefish_mvp', u'Documentation of stonefish_ros',
+     author, 'stonefish_mvp', 'ROS-MVP package for Stonefish library.',
      'Miscellaneous'),
 ]
 
