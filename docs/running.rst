@@ -9,7 +9,7 @@ To run the standard simulator you have to execute the ``parsed_simulator`` node,
 
 .. code-block:: console
 
-    $ rosrun stonefish_ros parsed_simulator <data_path> <description_filename> <rate> <width> <height> <graphics_quality>
+    $ rosrun stonefish_mvp parsed_simulator <data_path> <description_filename> <rate> <width> <height> <graphics_quality>
 
 where:
 
@@ -24,7 +24,7 @@ Another option is to include the provided ``launch/simulator.launch`` file in yo
 .. code-block:: xml
 
     <launch>
-        <include file="$(find stonefish_ros)/launch/simulator.launch">
+        <include file="$(find stonefish_mvp)/launch/simulator.launch">
             <arg name="simulation_data" value="$(find my_package)/data"/>
             <arg name="scenario_description" value="$(find my_package)/scenarios/simulation.scn"/>
             <arg name="simulation_rate" value="300.0"/>

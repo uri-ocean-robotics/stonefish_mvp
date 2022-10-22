@@ -10,19 +10,11 @@ This package delivers a ROS interface for the _Stonefish_ library. It also inclu
 
 The original stonefish_ros package depends on [open-access & proprietary](https://bitbucket.org/iquarobotics/cola2_msgs/src/master/LICENSE.txt) `cola2_msgs` package. Stonefish MVP package offers an alternative stonefish simulator wrapper that doesn't depend on proprietary packages.
 
-### Installation
+## Documentation
 
-1. Install the open-source [Stonefish](https://github.com/patrykcieslak/stonefish) library (*the same version as the ROS package!*).
-2. Clone the *stonefish_mvp* package to your catkin workspace.
-3. Compile the workspace.
+Documentation for stonefish_mvp resides at https://uri-ocean-robotics.github.io/stonefish_mvp
 
-### Launching
-
-From the author of the stonefish:
-> To run the standard simulator node you have to include the 'simulator.launch' file in your own launch file, overriding the default arguments.
-This package does not include any examples of usage. The best way to learn how to use this package is to install the [cola2_stonefish](https://bitbucket.org/udg_cirs/cola2_stonefish) package, containing multiple, fully working examples of robots, developed by the CIRS Laboratory (University of Girona, Spain).
-
-### Credits
+## Credits
 
 The source code for `stonefish_ros` package is at https://github.com/patrykcieslak/stonefish_ros.
 
