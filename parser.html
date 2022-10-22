@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Defining scenarios &mdash; Stonefish MVP 1.3.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster.custom.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster.bundle.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster-sideTip-shadow.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster-sideTip-punk.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster-sideTip-noir.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster-sideTip-light.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster-sideTip-borderless.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/micromodal.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/sphinx_rtd_theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/js/hoverxref.js"></script>
+        <script src="_static/js/tooltipster.bundle.min.js"></script>
+        <script src="_static/js/micromodal.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Robots" href="robots.html" />
+    <link rel="prev" title="Running" href="running.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #016A91" >
+            <a href="index.html">
+            <img src="_static/logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Defining scenarios</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#stonefish-xml-parser">Stonefish XML parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ros-extensions">ROS extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="robots.html">Robots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="actuators.html">Actuators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensors.html">Sensors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #016A91" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Stonefish MVP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Defining scenarios</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/parser.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="defining-scenarios">
+<h1>Defining scenarios<a class="headerlink" href="#defining-scenarios" title="Permalink to this heading"></a></h1>
+<div class="section" id="stonefish-xml-parser">
+<h2>Stonefish XML parser<a class="headerlink" href="#stonefish-xml-parser" title="Permalink to this heading"></a></h2>
+<p>When using the <em>Stonefish</em> library, the simulation scenario can be defined using C++ code or loaded from an XML scenario description file.
+The second option should be the choice in most situations, as it allows for quick changes in the scenario, without the need for recompiling the code.
+One of the reasons to use the C++ code is when an extension of the library functionality is needed.</p>
+<p>The <em>stonefish_ros</em> package uses the XML parser approach due to its purpose of delivering a standard simulator node, that can be used without the need for recompilation. The parser class was extended to support ROS functionality on top of the core library functionality.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <strong>XML syntax</strong> that is necessary to define a simulation scenario is discussed in detail in the <a class="reference external" href="https://stonefish.readthedocs.io/">Stonefish documentation</a>. Below, only the extensions implemented to support the seamless integration of <em>Stonefish</em> and ROS are presented.</p>
+</div>
+</div>
+<div class="section" id="ros-extensions">
+<h2>ROS extensions<a class="headerlink" href="#ros-extensions" title="Permalink to this heading"></a></h2>
+<p>The following XML syntax extensions were implemented for the <em>Stonefish</em>-ROS integration:</p>
+<ol class="arabic simple">
+<li><p>Parsing params passed from the launch file:</p></li>
+</ol>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;robot</span> <span class="na">name=</span><span class="s">&quot;$(param robot_name)&quot;</span><span class="nt">&gt;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Finding files using names of ROS packages.</p></li>
+</ol>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;mesh</span> <span class="na">filename=</span><span class="s">&quot;$(find my_package)/data/robot.obj&quot;</span> <span class="na">scale=</span><span class="s">&quot;1.0&quot;</span><span class="nt">/&gt;</span>
+</pre></div>
+</div>
+<ol class="arabic" start="3">
+<li><p>Definition of topic names, used to publish data from the simulator and receive requests:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="robots.html#robots"><span class="std std-ref">Robot joint and thruster state</span></a></p></li>
+<li><p><a class="reference internal" href="robots.html#robots"><span class="std std-ref">Robot servo and thruster setpoints</span></a></p></li>
+<li><p><a class="reference internal" href="sensors.html#sensors"><span class="std std-ref">Sensor measurements</span></a></p></li>
+<li><p><a class="reference internal" href="misc.html#misc"><span class="std std-ref">Trajectory state for animated bodies</span></a></p></li>
+<li><p><a class="reference internal" href="misc.html#misc"><span class="std std-ref">Desired pose and twist for animated bodies (manual trajectory)</span></a></p></li>
+<li><p><a class="reference internal" href="misc.html#misc"><span class="std std-ref">Contact information</span></a>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="running.html" class="btn btn-neutral float-left" title="Running" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="robots.html" class="btn btn-neutral float-right" title="Robots" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Patryk Cieślak.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

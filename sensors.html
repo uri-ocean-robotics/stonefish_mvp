@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sensors &mdash; Stonefish MVP 1.3.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster.custom.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster.bundle.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster-sideTip-shadow.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster-sideTip-punk.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster-sideTip-noir.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster-sideTip-light.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster-sideTip-borderless.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/micromodal.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/sphinx_rtd_theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/js/hoverxref.js"></script>
+        <script src="_static/js/tooltipster.bundle.min.js"></script>
+        <script src="_static/js/micromodal.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Miscellaneous" href="misc.html" />
+    <link rel="prev" title="Actuators" href="actuators.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #016A91" >
+            <a href="index.html">
+            <img src="_static/logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parser.html">Defining scenarios</a></li>
+<li class="toctree-l1"><a class="reference internal" href="robots.html">Robots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="actuators.html">Actuators</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Sensors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#rotary-encoder">Rotary encoder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#force-torque-6-axis">Force-torque (6-axis)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#odometry">Odometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#imu">IMU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gps">GPS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#doppler-velocity-log-dvl">Doppler velocity log (DVL)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pressure">Pressure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multi-beam">Multi-beam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#color-camera">Color camera</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#depth-camera">Depth camera</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#forward-looking-sonar-fls">Forward-looking sonar (FLS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mechanical-scanning-imaging-sonar-msis">Mechanical scanning imaging sonar (MSIS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#side-scan-sonar-sss">Side-scan sonar (SSS)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #016A91" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Stonefish MVP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Sensors</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/sensors.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="sensors">
+<span id="id1"></span><h1>Sensors<a class="headerlink" href="#sensors" title="Permalink to this heading"></a></h1>
+<p>The <em>Stonefish</em> library implements a wide range of sensor simulations. Each of the sensors produces a specific output, that can be retrieved. The <em>stonefish_ros</em> package implements automatic allocation of publishers and generation of appropriate messages, published when the new sensor data is available. The only definition that the user has to add to the standard definiton of a sensor, to use this functionality, is the name of the topic used by the publisher:</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;sensor</span> <span class="na">name=</span><span class="s">&quot;...&quot;</span> <span class="na">type=</span><span class="s">&quot;...&quot;</span><span class="nt">&gt;</span>
+    <span class="cm">&lt;!-- standard sensor definitions --&gt;</span>
+    <span class="nt">&lt;ros_publisher</span> <span class="na">topic=</span><span class="s">&quot;/topic_name&quot;</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/sensor&gt;</span>
+</pre></div>
+</div>
+<p>For each sensor type a different message type is published. Some of the sensors need to publish on multiple topics. Specific information on all supported sensors is presented below.</p>
+<div class="section" id="rotary-encoder">
+<h2>Rotary encoder<a class="headerlink" href="#rotary-encoder" title="Permalink to this heading"></a></h2>
+<p>Message type: <code class="docutils literal notranslate"><span class="pre">sensor_msgs::JointState</span></code></p>
+</div>
+<div class="section" id="force-torque-6-axis">
+<h2>Force-torque (6-axis)<a class="headerlink" href="#force-torque-6-axis" title="Permalink to this heading"></a></h2>
+<p>Message type: <code class="docutils literal notranslate"><span class="pre">geometry_msgs::WrenchStamped</span></code></p>
+</div>
+<div class="section" id="odometry">
+<h2>Odometry<a class="headerlink" href="#odometry" title="Permalink to this heading"></a></h2>
+<p>Message type: <code class="docutils literal notranslate"><span class="pre">nav_msgs::Odometry</span></code></p>
+</div>
+<div class="section" id="imu">
+<h2>IMU<a class="headerlink" href="#imu" title="Permalink to this heading"></a></h2>
+<p>Message type: <code class="docutils literal notranslate"><span class="pre">sensor_msgs::Imu</span></code></p>
+</div>
+<div class="section" id="gps">
+<h2>GPS<a class="headerlink" href="#gps" title="Permalink to this heading"></a></h2>
+<p>Message type: <code class="docutils literal notranslate"><span class="pre">sensor_msgs::NavSatFix</span></code></p>
+</div>
+<div class="section" id="doppler-velocity-log-dvl">
+<h2>Doppler velocity log (DVL)<a class="headerlink" href="#doppler-velocity-log-dvl" title="Permalink to this heading"></a></h2>
+<p>Message type: <code class="docutils literal notranslate"><span class="pre">geometry_msgs::TwistWithCovarianceStamped</span></code></p>
+<p>Second message type: <code class="docutils literal notranslate"><span class="pre">sensor_msgs::Range</span></code></p>
+</div>
+<div class="section" id="pressure">
+<h2>Pressure<a class="headerlink" href="#pressure" title="Permalink to this heading"></a></h2>
+<p>Message type: <code class="docutils literal notranslate"><span class="pre">sensor_msgs::FluidPressure</span></code></p>
+</div>
+<div class="section" id="multi-beam">
+<h2>Multi-beam<a class="headerlink" href="#multi-beam" title="Permalink to this heading"></a></h2>
+<p>Message type: <code class="docutils literal notranslate"><span class="pre">sensor_msgs::LaserScan</span></code></p>
+</div>
+<div class="section" id="color-camera">
+<h2>Color camera<a class="headerlink" href="#color-camera" title="Permalink to this heading"></a></h2>
+<p>Message type: <code class="docutils literal notranslate"><span class="pre">sensor_msgs::Image</span></code></p>
+<p>Second message type: <code class="docutils literal notranslate"><span class="pre">sensor_msgs::CameraInfo</span></code></p>
+</div>
+<div class="section" id="depth-camera">
+<h2>Depth camera<a class="headerlink" href="#depth-camera" title="Permalink to this heading"></a></h2>
+<p>Message type: <code class="docutils literal notranslate"><span class="pre">sensor_msgs::Image</span></code></p>
+<p>Second message type: <code class="docutils literal notranslate"><span class="pre">sensor_msgs::CameraInfo</span></code></p>
+</div>
+<div class="section" id="forward-looking-sonar-fls">
+<h2>Forward-looking sonar (FLS)<a class="headerlink" href="#forward-looking-sonar-fls" title="Permalink to this heading"></a></h2>
+<p>Message type: <code class="docutils literal notranslate"><span class="pre">sensor_msgs::Image</span></code></p>
+<p>Second message type: <code class="docutils literal notranslate"><span class="pre">sensor_msgs::Image</span></code></p>
+</div>
+<div class="section" id="mechanical-scanning-imaging-sonar-msis">
+<h2>Mechanical scanning imaging sonar (MSIS)<a class="headerlink" href="#mechanical-scanning-imaging-sonar-msis" title="Permalink to this heading"></a></h2>
+<p>Message type: <code class="docutils literal notranslate"><span class="pre">sensor_msgs::Image</span></code></p>
+<p>Second message type: <code class="docutils literal notranslate"><span class="pre">sensor_msgs::Image</span></code></p>
+</div>
+<div class="section" id="side-scan-sonar-sss">
+<h2>Side-scan sonar (SSS)<a class="headerlink" href="#side-scan-sonar-sss" title="Permalink to this heading"></a></h2>
+<p>Message type: <code class="docutils literal notranslate"><span class="pre">sensor_msgs::Image</span></code></p>
+<p>Second message type: <code class="docutils literal notranslate"><span class="pre">sensor_msgs::Image</span></code></p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="actuators.html" class="btn btn-neutral float-left" title="Actuators" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="misc.html" class="btn btn-neutral float-right" title="Miscellaneous" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Patryk Cieślak.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

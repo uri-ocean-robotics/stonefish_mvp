@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to ROS-MVP package for Stonefish &mdash; Stonefish MVP 1.3.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster.custom.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster.bundle.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster-sideTip-shadow.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster-sideTip-punk.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster-sideTip-noir.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster-sideTip-light.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/tooltipster-sideTip-borderless.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/micromodal.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/sphinx_rtd_theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/js/hoverxref.js"></script>
+        <script src="_static/js/tooltipster.bundle.min.js"></script>
+        <script src="_static/js/micromodal.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="install.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #016A91" >
+            <a href="#">
+            <img src="_static/logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parser.html">Defining scenarios</a></li>
+<li class="toctree-l1"><a class="reference internal" href="robots.html">Robots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="actuators.html">Actuators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensors.html">Sensors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #016A91" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Stonefish MVP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+      <li>Welcome to ROS-MVP package for Stonefish</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="welcome-to-ros-mvp-package-for-stonefish">
+<h1>Welcome to ROS-MVP package for Stonefish<a class="headerlink" href="#welcome-to-ros-mvp-package-for-stonefish" title="Permalink to this heading"></a></h1>
+<div class="section" id="stonefish-an-advanced-simulation-tool-developed-for-marine-robotics">
+<h2>Stonefish: an advanced simulation tool developed for marine robotics<a class="headerlink" href="#stonefish-an-advanced-simulation-tool-developed-for-marine-robotics" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/patrykcieslak/stonefish">Stonefish</a> is a C++ library combining a physics engine and a lightweight rendering pipeline. The physics engine is based on the core functionality of the <a class="reference external" href="https://pybullet.org">Bullet Physics</a> library, extended to deliver realistic simulation of marine robots. It is directed towards researchers in the field of marine robotics but can as well be used as a general purpose robot simulator.</p>
+<p><em>Stonefish</em> includes advanced hydrodynamics computation based on actual geometry of bodies to better approximate hydrodynamic forces and allow for effects not possible when using symbolic models. The rendering pipeline, developed from the ground up, delivers realistic rendering of atmosphere, ocean and underwater environment. Special focus was put on the latter, where effects of wavelength-dependent light absorption and scattering were considered.</p>
+<p><em>Stonefish</em> library can be used to create custom standalone simulators or combined with a <a class="reference external" href="https://www.ros.org">Robot Operating System (ROS)</a> package, called <a class="reference external" href="https://github.com/patrykcieslak/stonefish_ros">stonefish_ros</a>, which delivers a convenient way to use the <em>Stonefish</em> potential in a ROS-oriented environment.</p>
+</div>
+<div class="section" id="ros-mvp-package-for-stonefish">
+<h2>ROS-MVP package for Stonefish<a class="headerlink" href="#ros-mvp-package-for-stonefish" title="Permalink to this heading"></a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This package is a modified version of <a class="reference external" href="https://github.com/patrykcieslak/stonefish_ros">stonefish_ros</a> repository.</p>
+</div>
+<p>The <em>stonefish_mvp</em> package delivers an implementation of a standard simulator node. The standard simulator is a graphical type simulator, which loads the description of the simulation scenario from an XML file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Stonefish simulator is shipped as a library.
+It’s core functionality doesn’t depend on ROS.
+It requires a wrapper executable to run.
+This repository contains wrapper for stonefish, forked from original <a class="reference external" href="https://github.com/patrykcieslak/stonefish_ros">stonefish_ros</a> repository.
+This repository is maintained by University of Rhode Island Smart Ocean Systems Laboratory.</p>
+</div>
+<p>The syntax of the scenario description files is explained in detail in the <em>Stonefish</em> library documentation.
+The <em>stonefish_ros</em> package extends this syntax, to include ROS specific definitions, through subclassing of the original XML parser class.
+The new parser is able to support finding files in other ROS packages, parsing parameters, as well as creating necessary publishers, subscribers and services automatically.</p>
+<p>After the simulation scenario is constructed based on the description, the simulation automatically starts.
+With each simulation step, the readings of the selected sensors are published using appropriate ROS topics and the setpoints of the robots’ actuators are updated based on incoming ROS messages.
+The sensor publishing is defined through a set of functions, constituting a <em>Stonefish</em>-ROS interface.
+Moreover, some functions of the library are exposed through services.</p>
+</div>
+<div class="section" id="cite-me">
+<h2>Cite Me<a class="headerlink" href="#cite-me" title="Permalink to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Stonefish simulator software and stonefish_ros wrapper were written and is continuously developed by <strong>Patryk Cieślak</strong>.</p>
+</div>
+<p>If you find this software useful in your research, please cite:</p>
+<p><em>Patryk Cieślak, “Stonefish: An Advanced Open-Source Simulation Tool Designed for Marine Robotics, With a ROS Interface”, In Proceedings of MTS/IEEE OCEANS 2019, June 2019, Marseille, France</em></p>
+<div class="highlight-bib notranslate"><div class="highlight"><pre><span></span><span class="nc">@inproceedings</span><span class="p">{</span><span class="nl">stonefish</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;Cie{\&#39;s}lak, Patryk&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="na">booktitle</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;OCEANS 2019 - Marseille&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="na">title</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;Stonefish: An Advanced Open-Source Simulation Tool Designed for Marine Robotics, With a ROS Interface&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="na">month</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;jun&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="na">year</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;2019&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="na">doi</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;10.1109/OCEANSE.2019.8867434&quot;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="funding">
+<h2>Funding<a class="headerlink" href="#funding" title="Permalink to this heading"></a></h2>
+<p>This work was part of a project titled ”Force/position control system to enable compliant manipulation from a floating I-AUV”, which received funding from the European Community H2020 Programme, under the Marie Skłodowska-Curie grant agreement no. 750063. The work was continued under a project titled ”EU Marine Robots”, which received funding from the European Community H2020 Programme, grant agreement no. 731103.</p>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="install.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Patryk Cieślak.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
