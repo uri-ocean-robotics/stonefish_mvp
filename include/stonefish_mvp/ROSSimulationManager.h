@@ -183,6 +183,7 @@ namespace sf
         std::map<std::string, std::pair<sensor_msgs::ImagePtr, sensor_msgs::ImagePtr>> sonarMsgPrototypes;
         std::vector<ROSRobot*> rosRobots;
         std::vector<ROSControlInterface*> controlIfs;
+        std::string scenarioDescrption;
 
         ros::Publisher clockPub;
 

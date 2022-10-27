@@ -77,6 +77,9 @@ ROSSimulationManager::ROSSimulationManager(Scalar stepsPerSecond, std::string sc
     srvDCurrents = nh.advertiseService("disable_currents", &ROSSimulationManager::DisableCurrents, this);
 
     clockPub = nh.advertise<rosgraph_msgs::Clock>("/clock", 1);
+
+    nh.param<std::string>("scenario_description", scenarioDescrption, "");
+
     // simTime = 0;
 }
 
@@ -144,9 +147,15 @@ std::vector<ROSControlInterface*>& ROSSimulationManager::getControlInterfaces()
 
 void ROSSimulationManager::BuildScenario()
 {
+
+    std::ofstream scenarioFile;
+    scenarioFile.open(ros::file_log::getLogDirectory() + "/scenario.scn");
+    scenarioFile << scenarioDescrption;
+    scenarioFile.close();
+
     //Run parser
     ROSScenarioParser parser(this);
-    bool success = parser.Parse(scnFilePath);
+    bool success = parser.Parse(ros::file_log::getLogDirectory() + "/scenario.scn");
 
     //Save log
     std::string logFilePath = ros::file_log::getLogDirectory() + "/stonefish_mvp_parser.log";

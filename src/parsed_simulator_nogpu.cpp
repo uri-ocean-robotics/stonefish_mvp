@@ -33,7 +33,7 @@ int main(int argc, char **argv)
 	ros::init(argc, argv, "parsed_simulator_nogpu", ros::init_options::NoSigintHandler);
 
     //Check number of command line arguments
-	if(argc < 4)
+	if(argc < 3)
 	{
 		ROS_FATAL("Not enough command line arguments provided!");
 		return 1;
@@ -41,10 +41,10 @@ int main(int argc, char **argv)
 
     //Parse arguments
     std::string dataDirPath = std::string(argv[1]) + "/";
-    std::string scenarioPath(argv[2]);
-    sf::Scalar rate = atof(argv[3]);
+    // std::string scenarioPath(argv[2]);
+    sf::Scalar rate = atof(argv[2]);
 
-	sf::ROSSimulationManager manager(rate, scenarioPath);
+	sf::ROSSimulationManager manager(rate, "");
     sf::ConsoleSimulationApp app("Stonefish Simulator", dataDirPath, &manager);
 	app.Run();
 
