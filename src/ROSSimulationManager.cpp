@@ -148,14 +148,19 @@ std::vector<ROSControlInterface*>& ROSSimulationManager::getControlInterfaces()
 void ROSSimulationManager::BuildScenario()
 {
 
-    std::ofstream scenarioFile;
-    scenarioFile.open(ros::file_log::getLogDirectory() + "/scenario.scn");
-    scenarioFile << scenarioDescrption;
-    scenarioFile.close();
+    if(!scenarioDescrption.empty()) {
+        // Run parser from the scenario description from ROS parameters
+        scnFilePath = ros::file_log::getLogDirectory() + "/scenario.scn";
+        std::ofstream scenarioFile;
+        scenarioFile.open(scnFilePath);
+        scenarioFile << scenarioDescrption;
+        scenarioFile.close();
 
-    //Run parser
+    }
+
     ROSScenarioParser parser(this);
-    bool success = parser.Parse(ros::file_log::getLogDirectory() + "/scenario.scn");
+    bool success = parser.Parse(scnFilePath);
+
 
     //Save log
     std::string logFilePath = ros::file_log::getLogDirectory() + "/stonefish_mvp_parser.log";

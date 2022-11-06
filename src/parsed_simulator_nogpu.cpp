@@ -23,29 +23,29 @@
 //  Copyright (c) 2020 Patryk Cieslak. All rights reserved.
 //
 
-#include <ros/ros.h>
-#include <Stonefish/core/ConsoleSimulationApp.h>
-#include <Stonefish/utils/SystemUtil.hpp>
+#include "ros/ros.h"
+#include "Stonefish/core/ConsoleSimulationApp.h"
+#include "Stonefish/utils/SystemUtil.hpp"
+
 #include "stonefish_mvp/ROSSimulationManager.h"
+#include "stonefish_mvp/Options.h"
 
 int main(int argc, char **argv)
 {
+
+    sf::ArgParser argParser;
+
+    argParser.parse(argc, argv);
+
 	ros::init(argc, argv, "parsed_simulator_nogpu", ros::init_options::NoSigintHandler);
 
-    //Check number of command line arguments
-	if(argc < 3)
-	{
-		ROS_FATAL("Not enough command line arguments provided!");
-		return 1;
-	}
-
-    //Parse arguments
-    std::string dataDirPath = std::string(argv[1]) + "/";
-    // std::string scenarioPath(argv[2]);
-    sf::Scalar rate = atof(argv[2]);
-
-	sf::ROSSimulationManager manager(rate, "");
-    sf::ConsoleSimulationApp app("Stonefish Simulator", dataDirPath, &manager);
+	sf::ROSSimulationManager manager(
+        argParser.getOptions().simulationRate,
+        argParser.getOptions().scenarioPath);
+    sf::ConsoleSimulationApp app(
+        "Stonefish Simulator",
+        argParser.getOptions().dataDir,
+        &manager);
 	app.Run();
 
 	return 0;

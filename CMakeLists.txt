@@ -92,6 +92,7 @@ add_executable(parsed_simulator src/parsed_simulator.cpp
 	src/ROSSimulationManager.cpp
 	src/ROSScenarioParser.cpp
 	src/ROSControlInterface.cpp
+  src/Options.cpp
 )
 target_link_libraries(parsed_simulator ${catkin_LIBRARIES} ${Stonefish_LIBRARIES} ${PROJECT_NAME})
 
@@ -100,5 +101,6 @@ add_executable(parsed_simulator_nogpu src/parsed_simulator_nogpu.cpp
 	src/ROSSimulationManager.cpp
 	src/ROSScenarioParser.cpp
 	src/ROSControlInterface.cpp
+  src/Options.cpp
 )
 target_link_libraries(parsed_simulator_nogpu ${catkin_LIBRARIES} ${Stonefish_LIBRARIES} ${PROJECT_NAME})
