@@ -42,6 +42,7 @@ int main(int argc, char **argv)
 	sf::ROSSimulationManager manager(
         argParser.getOptions().simulationRate,
         argParser.getOptions().scenarioPath);
+
     sf::ConsoleSimulationApp app(
         "Stonefish Simulator",
         argParser.getOptions().dataDir,

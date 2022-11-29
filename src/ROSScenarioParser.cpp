@@ -303,7 +303,7 @@ bool ROSScenarioParser::ParseRobot(XMLElement* element)
     }
 
     //Generate subscribers
-    if((item = element->FirstChildElement("ros_subscriber")) != nullptr)
+    if((item = element->FirstChildElement("ros_subscriber2")) != nullptr)
     {
         const char* topicThrust = nullptr;
         const char* topicProp = nullptr;
