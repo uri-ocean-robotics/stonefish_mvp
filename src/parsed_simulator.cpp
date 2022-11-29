@@ -22,72 +22,39 @@
 //  Created by Patryk Cieslak on 12/06/19.
 //  Copyright (c) 2019-2020 Patryk Cieslak. All rights reserved.
 //
+#include "unistd.h"
+#include "cctype"
+#include "cstdlib"
+#include "cstdio"
 
-#include <ros/ros.h>
-#include <Stonefish/core/GraphicalSimulationApp.h>
-#include <Stonefish/utils/SystemUtil.hpp>
+#include "ros/ros.h"
+#include "Stonefish/core/GraphicalSimulationApp.h"
+#include "Stonefish/utils/SystemUtil.hpp"
+
 #include "stonefish_mvp/ROSSimulationManager.h"
+#include "stonefish_mvp/Options.h"
+
 
 int main(int argc, char **argv)
 {
+
+    sf::ArgParser argParser;
+
+    argParser.parse(argc, argv);
+
 	ros::init(argc, argv, "parsed_simulator", ros::init_options::NoSigintHandler);
 
-    //Check number of command line arguments
-	if(argc < 6)
-	{
-		ROS_FATAL("Not enough command line arguments provided!");
-		return 1;
-	}
+	sf::ROSSimulationManager manager(
+        argParser.getOptions().simulationRate,
+        argParser.getOptions().scenarioPath);
 
-    //Parse arguments
-    std::string dataDirPath = std::string(argv[1]) + "/";
-    // std::string scenarioPath(argv[2]);
-    sf::Scalar rate = atof(argv[2]);
+    sf::GraphicalSimulationApp app(
+        "Stonefish Simulator",
+        argParser.getOptions().dataDir,
+        argParser.getOptions().renderSettings,
+        argParser.getOptions().helperSettings, &manager);
 
-	sf::RenderSettings s;
-    s.windowW = atoi(argv[3]);
-    s.windowH = atoi(argv[4]);
-
-    std::string quality(argv[5]);
-    if(quality == "low")
-    {
-        s.shadows = sf::RenderQuality::LOW;
-        s.ao = sf::RenderQuality::DISABLED;
-        s.atmosphere = sf::RenderQuality::LOW;
-        s.ocean = sf::RenderQuality::LOW;
-        s.aa = sf::RenderQuality::LOW;
-        s.ssr = sf::RenderQuality::DISABLED;
-    }
-    else if(quality == "high")
-    {
-        s.shadows = sf::RenderQuality::HIGH;
-        s.ao = sf::RenderQuality::HIGH;
-        s.atmosphere = sf::RenderQuality::HIGH;
-        s.ocean = sf::RenderQuality::HIGH;
-        s.aa = sf::RenderQuality::HIGH;
-        s.ssr = sf::RenderQuality::HIGH;
-    }
-    else // "medium"
-    {
-        s.shadows = sf::RenderQuality::MEDIUM;
-        s.ao = sf::RenderQuality::MEDIUM;
-        s.atmosphere = sf::RenderQuality::MEDIUM;
-        s.ocean = sf::RenderQuality::MEDIUM;
-        s.aa = sf::RenderQuality::MEDIUM;
-        s.ssr = sf::RenderQuality::MEDIUM;
-    }
-
-    sf::HelperSettings h;
-    h.showFluidDynamics = false;
-    h.showCoordSys = false;
-    h.showBulletDebugInfo = false;
-    h.showSensors = false;
-    h.showActuators = false;
-    h.showForces = false;
-
-	sf::ROSSimulationManager manager(rate, "");
-    sf::GraphicalSimulationApp app("Stonefish Simulator", dataDirPath, s, h, &manager);
-	app.Run();
+    app.Run();
 
 	return 0;
 }

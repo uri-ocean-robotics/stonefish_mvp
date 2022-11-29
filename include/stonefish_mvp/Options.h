@@ -16,38 +16,49 @@
 */
 
 //
-//  parsed_simulator_nogpu.cpp
+//  parsed_simulator.cpp
 //  stonefish_mvp
 //
-//  Created by Patryk Cieslak on 16/12/20.
-//  Copyright (c) 2020 Patryk Cieslak. All rights reserved.
+//  Created by Emir Cem Gezer on 12/06/19.
+//  Copyright (c) 2022 Emir Cem Gezer. All rights reserved.
 //
 
-#include "ros/ros.h"
-#include "Stonefish/core/ConsoleSimulationApp.h"
+#pragma once
+
+#include "cstdio"
+#include "cstdlib"
+#include "unistd.h"
+#include "string"
 #include "Stonefish/utils/SystemUtil.hpp"
 
-#include "stonefish_mvp/ROSSimulationManager.h"
-#include "stonefish_mvp/Options.h"
+namespace sf {
 
-int main(int argc, char **argv)
-{
+    struct ArgOptions {
 
-    sf::ArgParser argParser;
+        //! @brief Data Directory
+        std::string dataDir;
 
-    argParser.parse(argc, argv);
+        //! @brief Scenario file path
+        std::string scenarioPath;
 
-	ros::init(argc, argv, "parsed_simulator_nogpu", ros::init_options::NoSigintHandler);
+        //! @brief Simulation rate
+        sf::Scalar simulationRate;
 
-	sf::ROSSimulationManager manager(
-        argParser.getOptions().simulationRate,
-        argParser.getOptions().scenarioPath);
+        sf::RenderSettings renderSettings;
 
-    sf::ConsoleSimulationApp app(
-        "Stonefish Simulator",
-        argParser.getOptions().dataDir,
-        &manager);
-	app.Run();
+        sf::HelperSettings helperSettings;
+    };
 
-	return 0;
+    class ArgParser {
+        private:
+            ArgOptions argOptions;
+
+        public:
+            ArgParser() = default;
+
+            void parse(int argc, char* argv[]);
+
+            ArgOptions getOptions();
+
+    };
 }
