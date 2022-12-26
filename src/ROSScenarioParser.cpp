@@ -287,7 +287,9 @@ bool ROSScenarioParser::ParseRobot(XMLElement* element)
         std::string rosSubTopicName = a.rosSubTopicName;
         for(auto* e = element->FirstChildElement("actuator"); e != nullptr; e = e->NextSiblingElement("actuator"))
         {
-            if(a.actuator->getName().find(e->Attribute("name")) != std::string::npos)
+            if(a.actuator->getName().find(e->Attribute("name")) != std::string::npos &&
+                a.actuator->getType() != sf::ActuatorType::SERVO
+            )
             {
                 if((item = e->FirstChildElement("ros_subscriber")) != nullptr)
                 {
@@ -303,7 +305,7 @@ bool ROSScenarioParser::ParseRobot(XMLElement* element)
     }
 
     //Generate subscribers
-    if((item = element->FirstChildElement("ros_subscriber2")) != nullptr)
+    if((item = element->FirstChildElement("ros_subscriber")) != nullptr)
     {
         const char* topicThrust = nullptr;
         const char* topicProp = nullptr;
