@@ -98,7 +98,7 @@
 <div class="section" id="standard-graphical-simulator">
 <h2>Standard graphical simulator<a class="headerlink" href="#standard-graphical-simulator" title="Permalink to this heading"></a></h2>
 <p>To run the standard simulator you have to execute the <code class="docutils literal notranslate"><span class="pre">parsed_simulator</span></code> node, passing the required command line arguments:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>rosrun stonefish_mvp parsed_simulator &lt;data_path&gt; &lt;description_filename&gt; &lt;rate&gt; &lt;width&gt; &lt;height&gt; &lt;graphics_quality&gt;
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>rosrun<span class="w"> </span>stonefish_mvp<span class="w"> </span>parsed_simulator<span class="w"> </span>&lt;data_path&gt;<span class="w"> </span>&lt;description_filename&gt;<span class="w"> </span>&lt;rate&gt;<span class="w"> </span>&lt;width&gt;<span class="w"> </span>&lt;height&gt;<span class="w"> </span>&lt;graphics_quality&gt;
 </pre></div>
 </div>
 <p>where:</p>
@@ -111,13 +111,13 @@
 </ul>
 <p>Another option is to include the provided <code class="docutils literal notranslate"><span class="pre">launch/simulator.launch</span></code> file in your own launch file. It is necessary to override the default arguments. See an example below:</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;launch&gt;</span>
-    <span class="nt">&lt;include</span> <span class="na">file=</span><span class="s">&quot;$(find stonefish_mvp)/launch/simulator.launch&quot;</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;arg</span> <span class="na">name=</span><span class="s">&quot;simulation_data&quot;</span> <span class="na">value=</span><span class="s">&quot;$(find my_package)/data&quot;</span><span class="nt">/&gt;</span>
-        <span class="nt">&lt;arg</span> <span class="na">name=</span><span class="s">&quot;scenario_description&quot;</span> <span class="na">value=</span><span class="s">&quot;$(find my_package)/scenarios/simulation.scn&quot;</span><span class="nt">/&gt;</span>
-        <span class="nt">&lt;arg</span> <span class="na">name=</span><span class="s">&quot;simulation_rate&quot;</span> <span class="na">value=</span><span class="s">&quot;300.0&quot;</span><span class="nt">/&gt;</span>
-        <span class="nt">&lt;arg</span> <span class="na">name=</span><span class="s">&quot;graphics_resolution&quot;</span> <span class="na">value=</span><span class="s">&quot;1200 800&quot;</span><span class="nt">/&gt;</span>
-        <span class="nt">&lt;arg</span> <span class="na">name=</span><span class="s">&quot;graphics_quality&quot;</span> <span class="na">value=</span><span class="s">&quot;high&quot;</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;/include&gt;</span>
+<span class="w">    </span><span class="nt">&lt;include</span><span class="w"> </span><span class="na">file=</span><span class="s">&quot;$(find stonefish_mvp)/launch/simulator.launch&quot;</span><span class="nt">&gt;</span>
+<span class="w">        </span><span class="nt">&lt;arg</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;simulation_data&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;$(find my_package)/data&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;arg</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;scenario_description&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;$(find my_package)/scenarios/simulation.scn&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;arg</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;simulation_rate&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;300.0&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;arg</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;graphics_resolution&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;1200 800&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;arg</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;graphics_quality&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;high&quot;</span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/include&gt;</span>
 <span class="nt">&lt;/launch&gt;</span>
 </pre></div>
 </div>

@@ -107,9 +107,9 @@
   <div class="section" id="sensors">
 <span id="id1"></span><h1>Sensors<a class="headerlink" href="#sensors" title="Permalink to this heading"></a></h1>
 <p>The <em>Stonefish</em> library implements a wide range of sensor simulations. Each of the sensors produces a specific output, that can be retrieved. The <em>stonefish_ros</em> package implements automatic allocation of publishers and generation of appropriate messages, published when the new sensor data is available. The only definition that the user has to add to the standard definiton of a sensor, to use this functionality, is the name of the topic used by the publisher:</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;sensor</span> <span class="na">name=</span><span class="s">&quot;...&quot;</span> <span class="na">type=</span><span class="s">&quot;...&quot;</span><span class="nt">&gt;</span>
-    <span class="cm">&lt;!-- standard sensor definitions --&gt;</span>
-    <span class="nt">&lt;ros_publisher</span> <span class="na">topic=</span><span class="s">&quot;/topic_name&quot;</span><span class="nt">/&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;sensor</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;...&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;...&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="cm">&lt;!-- standard sensor definitions --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;ros_publisher</span><span class="w"> </span><span class="na">topic=</span><span class="s">&quot;/topic_name&quot;</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/sensor&gt;</span>
 </pre></div>
 </div>
