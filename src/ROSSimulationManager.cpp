@@ -20,7 +20,7 @@
 //  stonefish_mvp
 //
 //  Created by Patryk Cieslak on 17/09/19.
-//  Copyright (c) 2019-2021 Patryk Cieslak. All rights reserved.
+//  Copyright (c) 2019-2023 Patryk Cieslak. All rights reserved.
 //
 
 #include "stonefish_mvp/ROSSimulationManager.h"
@@ -56,6 +56,7 @@
 #include <Stonefish/actuators/Thruster.h>
 #include <Stonefish/actuators/Propeller.h>
 #include <Stonefish/actuators/Rudder.h>
+#include <Stonefish/actuators/SuctionCup.h>
 #include <Stonefish/actuators/Servo.h>
 #include <Stonefish/utils/SystemUtil.hpp>
 
@@ -456,34 +457,44 @@ void ROSSimulationManager::SimulationStepCompleted(Scalar timeStep)
                     if(rosRobots[i]->servoSetpoints.size() == 0)
                         continue;
 
-                    try
+                    auto it = rosRobots[i]->servoSetpoints.find(((Servo*)actuator)->getJointName());
+                    if(it != rosRobots[i]->servoSetpoints.end())
                     {
-                        std::pair<ServoControlMode, Scalar> setpoint = rosRobots[i]->servoSetpoints.at(((Servo*)actuator)->getJointName());
-                        if(setpoint.first == VELOCITY_CTRL)
+                        if(it->second.first == ServoControlMode::VELOCITY)
                         {
-                            ((Servo*)actuator)->setControlMode(ServoControlMode::VELOCITY_CTRL);
-                            ((Servo*)actuator)->setDesiredVelocity(setpoint.second);
+                            ((Servo*)actuator)->setControlMode(ServoControlMode::VELOCITY);
+                            ((Servo*)actuator)->setDesiredVelocity(it->second.second);
                         }
-                        else if(setpoint.first == POSITION_CTRL)
+                        else if(it->second.first == ServoControlMode::POSITION)
                         {
-                            ((Servo*)actuator)->setControlMode(ServoControlMode::POSITION_CTRL);
-                            ((Servo*)actuator)->setDesiredPosition(setpoint.second);
+                            ((Servo*)actuator)->setControlMode(ServoControlMode::POSITION);
+                            ((Servo*)actuator)->setDesiredPosition(it->second.second);
                         }
-                    }
-                    catch(const std::exception& e)
-                    {
-                        ROS_ERROR_STREAM(e.what());
                     }
                 }
                     break;
 
                 case ActuatorType::VBS:
                 {
-                    if(pubs.find(actuator->getName()) != pubs.end())
+                    auto it = pubs.find(actuator->getName());
+                    if(it != pubs.end())
                     {
                         std_msgs::Float64 msg;
                         msg.data = ((VariableBuoyancy*)actuator)->getLiquidVolume();
-                        pubs.at(actuator->getName()).publish(msg);
+                        // pubs.at(actuator->getName()).publish(msg);
+                        it->second.publish(msg);
+                    }
+                }
+                    break;
+
+                case ActuatorType::SUCTION_CUP:
+                {
+                    auto it = pubs.find(actuator->getName());
+                    if(it != pubs.end())
+                    {
+                        std_msgs::Bool msg;
+                        msg.data = ((SuctionCup*)actuator)->getPump();
+                        it->second.publish(msg);
                     }
                 }
                     break;
@@ -669,7 +680,7 @@ void ServosCallback::operator()(const sensor_msgs::JointStateConstPtr& msg)
         {
             try
             {
-                robot->servoSetpoints.at(msg->name[i]) = std::pair<ServoControlMode, Scalar>(ServoControlMode::POSITION_CTRL, msg->position[i]);
+                robot->servoSetpoints.at(msg->name[i]) = std::make_pair(ServoControlMode::POSITION, (Scalar)msg->position[i]);
             }
             catch(const std::out_of_range& e)
             {
@@ -683,7 +694,7 @@ void ServosCallback::operator()(const sensor_msgs::JointStateConstPtr& msg)
         {
             try
             {
-                robot->servoSetpoints.at(msg->name[i]) = std::pair<ServoControlMode, Scalar>(ServoControlMode::VELOCITY_CTRL, msg->velocity[i]);
+                robot->servoSetpoints.at(msg->name[i]) = std::make_pair(ServoControlMode::VELOCITY, (Scalar)msg->velocity[i]);
             }
             catch(const std::out_of_range& e)
             {
@@ -702,7 +713,7 @@ JointGroupCallback::JointGroupCallback(ROSSimulationManager* sm, ROSRobot* robot
 {
     //Generate setpoint placeholders
     for(size_t i=0; i<jointNames.size(); ++i)
-        robot->servoSetpoints[jointNames[i]] = std::pair(mode, Scalar(0));
+        robot->servoSetpoints[jointNames[i]] = std::make_pair(mode, Scalar(0));
 }
 
 void JointGroupCallback::operator()(const std_msgs::Float64MultiArrayConstPtr& msg)
@@ -717,7 +728,7 @@ void JointGroupCallback::operator()(const std_msgs::Float64MultiArrayConstPtr& m
     {
         try
         {
-            robot->servoSetpoints.at(jointNames[i]) = std::pair<ServoControlMode, Scalar>(mode, msg->data[i]);
+            robot->servoSetpoints.at(jointNames[i]) = std::make_pair(mode, (Scalar)msg->data[i]);
         }
         catch(const std::out_of_range& e)
         {
@@ -730,14 +741,14 @@ JointCallback::JointCallback(ROSSimulationManager* sm, ROSRobot* robot, ServoCon
     : sm(sm), robot(robot), mode(mode), jointName(jointName)
 {
     //Generate setpoint placeholder
-    robot->servoSetpoints[jointName] = std::pair(mode, Scalar(0));
+    robot->servoSetpoints[jointName] = std::make_pair(mode, Scalar(0));
 }
 
 void JointCallback::operator()(const std_msgs::Float64ConstPtr& msg)
 {
     try
     {
-        robot->servoSetpoints.at(jointName) = std::pair<ServoControlMode, Scalar>(mode, msg->data);
+        robot->servoSetpoints.at(jointName) = std::make_pair(mode, (Scalar)msg->data);
     }
     catch(const std::out_of_range& e)
     {
@@ -889,6 +900,21 @@ bool MSISService::operator()(stonefish_mvp::SonarSettings2::Request& req, stonef
         res.success = true;
         res.message = "New sonar settings applied.";
     }
+    return true;
+}
+
+SuctionCupService::SuctionCupService(SuctionCup* suction) : suction(suction)
+{
+}
+
+bool SuctionCupService::operator()(std_srvs::SetBool::Request& req, std_srvs::SetBool::Response& res)
+{
+    suction->setPump(req.data);
+    if(req.data)
+        res.message = "Pump turned on.";
+    else 
+        res.message = "Pump turned off.";
+    res.success = true;
     return true;
 }
 
