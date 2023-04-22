@@ -28,6 +28,7 @@ jobs:
         with:
           submodules: recursive
 
+
       - name: Checkout submodules
         run: git submodule update --init --recursive
 
@@ -46,6 +47,21 @@ jobs:
           cd ~/catkin_ws
           rosdep install --from-paths src --ignore-src -r -s  # do a dry-run first
           rosdep install --from-paths src --ignore-src -r -y
+
+      - name: Clone stonefish
+        run: |
+          git clone https://github.com/patrykcieslak/stonefish
+
+          # Install dependencies
+          sudo apt install libglm-dev libsdl2-dev -y
+
+          # Build and install
+          cd stonefish
+          mkdir build
+          cd build
+          cmake ..
+          make -j4
+          sudo make install
 
       - name: catkin build
         run: |
