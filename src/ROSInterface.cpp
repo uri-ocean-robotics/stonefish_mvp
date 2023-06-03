@@ -71,7 +71,7 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl_ros/point_cloud.h>
-
+#include <mvp_msgs/NMEA.h>
 #include <stonefish_mvp/Int32Stamped.h>
 #include <stonefish_mvp/BeaconInfo.h>
 
@@ -543,6 +543,20 @@ void ROSInterface::PublishContact(ros::Publisher& pub, Contact* cnt)
     msg.color.g = 1.0;
     msg.color.b = 0.0;
     msg.color.a = 1.0;
+    pub.publish(msg);
+}
+
+void ROSInterface::PublishAcom(ros::Publisher& pub, AcousticModem* acom) {
+
+    Scalar received_time;
+    std::string received_msg;
+    acom->getAcomInfo(received_time, received_msg);
+
+    mvp_msgs::NMEA msg;
+    msg.header.stamp = ros::Time::now();
+    msg.command = received_msg.c_str();
+    msg.values.push_back(received_time);
+
     pub.publish(msg);
 }
 

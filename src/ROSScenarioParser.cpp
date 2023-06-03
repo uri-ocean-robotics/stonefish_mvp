@@ -61,6 +61,7 @@
 #include <geometry_msgs/Vector3Stamped.h>
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
+#include <mvp_msgs/NMEA.h>
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_types.h>
 #include <stonefish_mvp/ThrusterState.h>
@@ -833,7 +834,13 @@ Comm* ROSScenarioParser::ParseComm(XMLElement* element, const std::string& nameP
             case CommType::USBL:
             {
                 pubs[commName] = nh.advertise<visualization_msgs::MarkerArray>(topicStr, 10);
-                pubs[commName + "/beacon_info"] = nh.advertise<stonefish_mvp::BeaconInfo>(topicStr + "/beacon_info", 10);
+                pubs[commName + "/beacon_info"] = nh.advertise<stonefish_mvp::BeaconInfo>(topicStr + "/beacon_info", 10);                   
+            }
+                break;
+
+            case CommType::ACOUSTIC:
+            {
+                pubs[commName] = nh.advertise<mvp_msgs::NMEA>(topicStr, 10);
             }
                 break;
 

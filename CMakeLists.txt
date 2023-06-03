@@ -17,13 +17,14 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
   controller_manager
   rosgraph_msgs
+  mvp_msgs
 )
 
 # set(ENV{PKG_CONFIG_PATH} "/home/lin/develop/ros/stonefish_ws/sim/stonefish/install/lib/pkgconfig")
 # find_package(PkgConfig REQUIRED)
 # pkg_check_modules(Stonefish REQUIRED stonefish>=1.3.0)
 
-# SET(Stonefish_DIR /home/lin/develop/ros/stonefish_ws/sim/stonefish/install/lib/cmake/Stonefish)
+SET(Stonefish_DIR /home/lin/develop/ros/stonefish_ws/sim/stonefish/install/lib/cmake/Stonefish)
 find_package(Stonefish REQUIRED 1.3.0)
 message(STATUS "Stonefish library status:")
 message(STATUS "    config: ${Stonefish_DIR}")
@@ -70,7 +71,7 @@ catkin_package(
                  pcl_ros
                  image_transport
                  controller_manager
-								 # mvp_msgs
+								 mvp_msgs
                  rosgraph_msgs
 	# DEPENDS Stonefish
 )

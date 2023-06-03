@@ -53,6 +53,7 @@
 #include <Stonefish/sensors/vision/MSIS.h>
 #include <Stonefish/sensors/Contact.h>
 #include <Stonefish/comms/USBL.h>
+#include <Stonefish/comms/AcousticModem.h>
 #include <Stonefish/actuators/Thruster.h>
 #include <Stonefish/actuators/Propeller.h>
 #include <Stonefish/actuators/Rudder.h>
@@ -311,22 +312,45 @@ void ROSSimulationManager::SimulationStepCompleted(Scalar timeStep)
         sensor->MarkDataOld();
     }
 
-    ///////////////////////////////////////COMMS///////////////////////////////////////////////////
+    ///////////////////////////////////////COMMS - LOCALIZATION///////////////////////////////////////////////////
     id = 0;
-    Comm* comm;
-    while((comm = getComm(id++)) != nullptr)
+    Comm* comm_pose;
+    while((comm_pose = getComm(id++)) != nullptr)
     {
-        if(!comm->isNewDataAvailable())
+        if(!comm_pose->isNewDataAvailable())
             continue;
 
-        if(pubs.find(comm->getName()) == pubs.end())
+        if(pubs.find(comm_pose->getName()) == pubs.end())
             continue;
 
-        switch(comm->getType())
+        switch(comm_pose->getType())
         {
             case CommType::USBL:
-                ROSInterface::PublishUSBL(pubs.at(comm->getName()), pubs.at(comm->getName() + "/beacon_info"), (USBL*)comm);
-                comm->MarkDataOld();
+                ROSInterface::PublishUSBL(pubs.at(comm_pose->getName()), pubs.at(comm_pose->getName() + "/beacon_info"), (USBL*)comm_pose);
+                comm_pose->MarkDataOld();
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    ///////////////////////////////////////COMMS - COMMUNICATION///////////////////////////////////////////////////
+    id = 0;
+    Comm* comm_comm;
+    while((comm_comm = getComm(id++)) != nullptr)
+    {
+        if(!comm_comm->isNewCommAvailable())
+            continue;
+
+        if(pubs.find(comm_comm->getName()) == pubs.end())
+            continue;
+
+        switch(comm_comm->getType())
+        {
+            case CommType::ACOUSTIC:
+                ROSInterface::PublishAcom(pubs.at(comm_comm->getName()), (AcousticModem*)comm_comm);
+                comm_comm->MarkCommOld();
                 break;
 
             default:
