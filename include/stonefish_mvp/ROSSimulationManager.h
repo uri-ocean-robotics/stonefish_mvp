@@ -55,6 +55,7 @@
 #include <image_transport/image_transport.h>
 #include <rosgraph_msgs/Clock.h>
 #include "stonefish_mvp/ROSControlInterface.h"
+#include <mvp_msgs/Float64Stamped.h>
 
 namespace sf
 {

@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
   controller_manager
   rosgraph_msgs
+  mvp_msgs
 )
 
 # set(ENV{PKG_CONFIG_PATH} "/home/lin/develop/ros/stonefish_ws/sim/stonefish/install/lib/pkgconfig")
@@ -70,7 +71,7 @@ catkin_package(
                  pcl_ros
                  image_transport
                  controller_manager
-								 # mvp_msgs
+								 mvp_msgs
                  rosgraph_msgs
 	# DEPENDS Stonefish
 )

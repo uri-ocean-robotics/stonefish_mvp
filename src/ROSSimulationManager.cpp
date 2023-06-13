@@ -621,6 +621,11 @@ void ROSSimulationManager::MSISScanReady(MSIS* msis)
     //Publish messages
     imgPubs.at(msis->getName()).publish(img);
     imgPubs.at(msis->getName() + "/display").publish(disp);
+
+    //Publish current rotation step
+    mvp_msgs::Float64Stamped step;
+    step.data = msis->getCurrentRotationStep();
+    pubs.at(msis->getName() + "/current_step").publish(step);
 }
 
 void ROSSimulationManager::Multibeam2ScanReady(Multibeam2* mb)
