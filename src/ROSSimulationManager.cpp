@@ -624,6 +624,8 @@ void ROSSimulationManager::MSISScanReady(MSIS* msis)
 
     //Publish current rotation step
     mvp_msgs::Float64Stamped step;
+    step.header.stamp = img->header.stamp;
+    step.header.frame_id = img->header.frame_id;
     step.data = msis->getCurrentRotationStep();
     pubs.at(msis->getName() + "/current_step").publish(step);
 }
