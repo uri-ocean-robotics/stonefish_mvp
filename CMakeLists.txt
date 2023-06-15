@@ -24,7 +24,7 @@ find_package(catkin REQUIRED COMPONENTS
 # find_package(PkgConfig REQUIRED)
 # pkg_check_modules(Stonefish REQUIRED stonefish>=1.3.0)
 
-# SET(Stonefish_DIR /home/lin/develop/ros/stonefish_ws/sim/stonefish/install/lib/cmake/Stonefish)
+SET(Stonefish_DIR /home/lin/develop/ros/stonefish_ws/sim/stonefish/install/lib/cmake/Stonefish)
 find_package(Stonefish REQUIRED 1.3.0)
 message(STATUS "Stonefish library status:")
 message(STATUS "    config: ${Stonefish_DIR}")

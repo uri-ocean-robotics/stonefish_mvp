@@ -60,6 +60,7 @@
 #include <geometry_msgs/WrenchStamped.h>
 #include <geometry_msgs/Vector3Stamped.h>
 #include <mvp_msgs/Float64Stamped.h>
+#include <mvp_msgs/MSISInfo.h>
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
 #include <pcl_ros/point_cloud.h>
@@ -781,6 +782,7 @@ Sensor* ROSScenarioParser::ParseSensor(XMLElement* element, const std::string& n
                         img_pubs[sensorName + "/display"] = it.advertise(topicStr + "/display", queueSize);
                         // pubs[sensorName + "/display"] = nh.advertise<sensor_msgs::Image>(topicStr + "/display", queueSize);
                         pubs[sensorName + "/current_step"] = nh.advertise<mvp_msgs::Float64Stamped>(topicStr + "/current_step", queueSize);
+                        pubs[sensorName + "/info"] = nh.advertise<mvp_msgs::MSISInfo>(topicStr + "/info", queueSize);
                     }
                         break;
 

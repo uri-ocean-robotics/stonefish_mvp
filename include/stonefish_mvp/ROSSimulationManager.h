@@ -56,6 +56,7 @@
 #include <rosgraph_msgs/Clock.h>
 #include "stonefish_mvp/ROSControlInterface.h"
 #include <mvp_msgs/Float64Stamped.h>
+#include <mvp_msgs/MSISInfo.h>
 
 namespace sf
 {
