@@ -633,19 +633,6 @@ void ROSSimulationManager::MSISScanReady(MSIS* msis)
     msis->getRotationLimits(min_rotation, max_rotation);
     unsigned int total_beams, bins;
     msis->getResolution(total_beams, bins);
-
-    mvp_msgs::MSISInfo info;
-    info.header = img->header;
-    info.step_angle = msis->getRotationStepAngle();
-    info.bins = bins;
-    info.horizontal_beam = msis->getHorizontalFOV();
-    info.vertical_beam = msis->getVerticalFOV();
-    info.min_range = msis->getRangeMin();
-    info.max_range = msis->getRangeMax();
-    info.min_rotation = min_rotation;
-    info.max_rotation = max_rotation;
-    info.gain = msis->getGain();
-    pubs.at(msis->getName() + "/info").publish(info);
 }
 
 void ROSSimulationManager::Multibeam2ScanReady(Multibeam2* mb)
