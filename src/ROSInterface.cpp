@@ -171,11 +171,16 @@ void ROSInterface::PublishIMU(ros::Publisher& pub, IMU* imu)
 
 void ROSInterface::PublishPressure(ros::Publisher& pub, Pressure* press)
 {
+    //! NOTE: 
+    //! stonefish only simulate gauge pressure, however, the sensor_msgs::FluidPressure
+    //! is Absolute pressure reading in Pascals, which include the standard atmospheric 
+    //! pressure (101325 Pa)
+
     Sample s = press->getLastSample();
     sensor_msgs::FluidPressure msg;
     msg.header.stamp.fromNSec(SIMULATION_TIME * 1000);
     msg.header.frame_id = press->getName();
-    msg.fluid_pressure = s.getValue(0);
+    msg.fluid_pressure = s.getValue(0) + 101325;
     msg.variance = press->getSensorChannelDescription(0).stdDev;
     msg.variance *= msg.variance; //Variance is square of standard deviation
     pub.publish(msg);
