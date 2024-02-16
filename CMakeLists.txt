@@ -37,7 +37,9 @@ add_message_files(
   Int32Stamped.msg
   ThrusterState.msg
   BeaconInfo.msg
+  ModemMsg.msg
 )
+
 
 add_service_files(
   FILES
@@ -85,6 +87,7 @@ include_directories(
 link_directories(
   ${Stonefish_LIBRARY_DIRS}
 )
+
 
 #Library
 add_library(${PROJECT_NAME}

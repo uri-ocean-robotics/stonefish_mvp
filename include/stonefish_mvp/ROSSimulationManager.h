@@ -26,7 +26,7 @@
 #ifndef __Stonefish_ROSSimulationManager__
 #define __Stonefish_ROSSimulationManager__
 
-//Stonefish
+// Stonefish
 #include <Stonefish/core/SimulationManager.h>
 #include <Stonefish/actuators/VariableBuoyancy.h>
 #include <Stonefish/actuators/Servo.h>
@@ -35,11 +35,15 @@
 #include <Stonefish/actuators/Rudder.h>
 #include <Stonefish/actuators/Light.h>
 
-//ROS
+#include <Stonefish/comms/AcousticModem.h>
+#include <Stonefish/comms/USBL.h>
+
+// ROS
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
 #include <std_msgs/Bool.h>
 #include <std_msgs/Float64.h>
+#include <std_msgs/String.h>
 #include <std_msgs/Float64MultiArray.h>
 #include <geometry_msgs/Vector3.h>
 #include <geometry_msgs/Transform.h>
@@ -63,14 +67,13 @@ namespace sf
     struct ROSActuator
     {
 
-
         Scalar setPoint;
 
-        Actuator* actuator;
+        Actuator *actuator;
 
         std::string rosSubTopicName;
 
-        ROSActuator(Actuator* actuator) :
+        ROSActuator(Actuator *actuator) : 
             actuator(actuator), setPoint(Scalar(0))
         {
             rosSubTopicName = std::string("control/" + actuator->getName());
@@ -78,29 +81,65 @@ namespace sf
 
         void applySetPoint()
         {
-            switch(actuator->getType()) {
-                case ActuatorType::THRUSTER:
-                    ((Thruster*)actuator)->setSetpoint(setPoint);
-                    break;
-                case ActuatorType::PROPELLER:
-                    ((Propeller*)actuator)->setSetpoint(setPoint);
-                    break;
-                case ActuatorType::RUDDER:
-                    ((Rudder*)actuator)->setSetpoint(setPoint);
-                    break;
-                    // TODO: how should I control the VBS?
-                case ActuatorType::VBS:
-                    break;
-                default:
-                    break;
+            switch (actuator->getType())
+            {
+            case ActuatorType::THRUSTER:
+                ((Thruster *)actuator)->setSetpoint(setPoint);
+                break;
+            case ActuatorType::PROPELLER:
+                ((Propeller *)actuator)->setSetpoint(setPoint);
+                break;
+            case ActuatorType::RUDDER:
+                ((Rudder *)actuator)->setSetpoint(setPoint);
+                break;
+                // TODO: how should I control the VBS?
+            case ActuatorType::VBS:
+                break;
+            default:
+                break;
             }
         }
 
-        void callback(const std_msgs::Float64ConstPtr& msg)
+        void callback(const std_msgs::Float64ConstPtr &msg)
         {
             setPoint = msg->data;
         }
+    };
 
+    struct ROSComm
+    {
+        Comm *comm;
+
+        std::string data;
+
+        std::string rosSubTopicName;
+
+        ROSComm(Comm *comm) : 
+            comm(comm), data("")
+        {
+            rosSubTopicName = std::string("comm/" + comm->getName());
+        }
+
+        void sendData()
+        {
+            switch (comm->getType())
+            {
+            case CommType::ACOUSTIC:
+                ((AcousticModem *)comm)->SendMessage(data);
+                break;
+            case CommType::USBL:
+                ((USBL *)comm)->SendMessage(data);
+                break;
+
+            default:
+                break;
+            }
+        }
+
+        void callback(const std_msgs::StringConstPtr &msg)
+        {
+            data = msg->data;
+        }
     };
 
     class ColorCamera;
@@ -116,7 +155,7 @@ namespace sf
 
     struct ROSRobot
     {
-        Robot* robot;
+        Robot *robot;
         bool publishBaseLinkTransform;
         std::vector<Scalar> thrusterSetpoints;
         std::vector<Scalar> propellerSetpoints;
@@ -124,15 +163,24 @@ namespace sf
         std::map<std::string, std::pair<ServoControlMode, Scalar>> servoSetpoints;
 
         std::vector<ROSActuator> rosActuators;
+        std::vector<ROSComm> rosComms;
 
-        ROSRobot(Robot* robot) : robot(robot), publishBaseLinkTransform(false)
+        ROSRobot(Robot *robot) : robot(robot), publishBaseLinkTransform(false)
         {
 
             unsigned int aID = 0;
-            Actuator* actuator;
-            while((actuator = robot->getActuator(aID++)) != nullptr)
+            unsigned int cID = 0;
+
+            Actuator *actuator;
+            while ((actuator = robot->getActuator(aID++)) != nullptr)
             {
                 rosActuators.emplace_back(ROSActuator(actuator));
+            }
+
+            Comm *comm;
+            while ((comm = robot->getComm(cID++)) != nullptr)
+            {
+                rosComms.emplace_back(ROSComm(comm));
             }
         }
     };
@@ -147,30 +195,30 @@ namespace sf
         virtual void BuildScenario();
         virtual void DestroyScenario();
 
-        void AddROSRobot(ROSRobot* robot);
+        void AddROSRobot(ROSRobot *robot);
 
         virtual void SimulationStepCompleted(Scalar timeStep);
-        virtual void ColorCameraImageReady(ColorCamera* cam);
-        virtual void DepthCameraImageReady(DepthCamera* cam);
-        virtual void Multibeam2ScanReady(Multibeam2* mb);
-        virtual void FLSScanReady(FLS* fls);
-        virtual void SSSScanReady(SSS* sss);
-        virtual void MSISScanReady(MSIS* sss);
+        virtual void ColorCameraImageReady(ColorCamera *cam);
+        virtual void DepthCameraImageReady(DepthCamera *cam);
+        virtual void Multibeam2ScanReady(Multibeam2 *mb);
+        virtual void FLSScanReady(FLS *fls);
+        virtual void SSSScanReady(SSS *sss);
+        virtual void MSISScanReady(MSIS *sss);
 
         bool EnableCurrents(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
         bool DisableCurrents(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
 
         virtual uint64_t getSimulationClock();
         virtual void SimulationClockSleep(uint64_t us);
-        ros::NodeHandle& getNodeHandle();
-        image_transport::ImageTransport& getImageTransportHandle();
-        std::map<std::string, ros::ServiceServer>& getServiceServers();
-        std::map<std::string, ros::Publisher>& getPublishers();
-        std::map<std::string, image_transport::Publisher>& getImagePublishers();
-        std::map<std::string, ros::Subscriber>& getSubscribers();
-        std::map<std::string, std::pair<sensor_msgs::ImagePtr, sensor_msgs::CameraInfoPtr>>& getCameraMsgPrototypes();
-        std::map<std::string, std::pair<sensor_msgs::ImagePtr, sensor_msgs::ImagePtr>>& getSonarMsgPrototypes();
-        std::vector<ROSControlInterface*>& getControlInterfaces();
+        ros::NodeHandle &getNodeHandle();
+        image_transport::ImageTransport &getImageTransportHandle();
+        std::map<std::string, ros::ServiceServer> &getServiceServers();
+        std::map<std::string, ros::Publisher> &getPublishers();
+        std::map<std::string, image_transport::Publisher> &getImagePublishers();
+        std::map<std::string, ros::Subscriber> &getSubscribers();
+        std::map<std::string, std::pair<sensor_msgs::ImagePtr, sensor_msgs::CameraInfoPtr>> &getCameraMsgPrototypes();
+        std::map<std::string, std::pair<sensor_msgs::ImagePtr, sensor_msgs::ImagePtr>> &getSonarMsgPrototypes();
+        std::vector<ROSControlInterface *> &getControlInterfaces();
 
     protected:
         std::string scnFilePath;
@@ -185,8 +233,8 @@ namespace sf
         std::map<std::string, ros::Subscriber> subs;
         std::map<std::string, std::pair<sensor_msgs::ImagePtr, sensor_msgs::CameraInfoPtr>> cameraMsgPrototypes;
         std::map<std::string, std::pair<sensor_msgs::ImagePtr, sensor_msgs::ImagePtr>> sonarMsgPrototypes;
-        std::vector<ROSRobot*> rosRobots;
-        std::vector<ROSControlInterface*> controlIfs;
+        std::vector<ROSRobot *> rosRobots;
+        std::vector<ROSControlInterface *> controlIfs;
         std::string scenarioDescrption;
 
         ros::Publisher clockPub;
@@ -194,48 +242,48 @@ namespace sf
         uint64_t simTime;
     };
 
-    //Callback functors
+    // Callback functors
     class UniformVFCallback
     {
     public:
-        UniformVFCallback(Uniform* vf);
-        void operator()(const geometry_msgs::Vector3ConstPtr& msg);
+        UniformVFCallback(Uniform *vf);
+        void operator()(const geometry_msgs::Vector3ConstPtr &msg);
 
     private:
-        Uniform* vf;
+        Uniform *vf;
     };
 
     class JetVFCallback
     {
     public:
-        JetVFCallback(Jet* vf);
-        void operator()(const std_msgs::Float64ConstPtr& msg);
+        JetVFCallback(Jet *vf);
+        void operator()(const std_msgs::Float64ConstPtr &msg);
 
     private:
-        Jet* vf;
+        Jet *vf;
     };
 
     class ServosCallback
     {
     public:
-        ServosCallback(ROSSimulationManager* sm, ROSRobot* robot);
-        void operator()(const sensor_msgs::JointStateConstPtr& msg);
+        ServosCallback(ROSSimulationManager *sm, ROSRobot *robot);
+        void operator()(const sensor_msgs::JointStateConstPtr &msg);
 
     private:
-        ROSSimulationManager* sm;
-        ROSRobot* robot;
+        ROSSimulationManager *sm;
+        ROSRobot *robot;
     };
 
     class JointGroupCallback
     {
     public:
-        JointGroupCallback(ROSSimulationManager* sm, ROSRobot* robot,
-                           ServoControlMode mode, const std::vector<std::string>& jointNames);
-        void operator()(const std_msgs::Float64MultiArrayConstPtr& msg);
+        JointGroupCallback(ROSSimulationManager *sm, ROSRobot *robot,
+                           ServoControlMode mode, const std::vector<std::string> &jointNames);
+        void operator()(const std_msgs::Float64MultiArrayConstPtr &msg);
 
     private:
-        ROSSimulationManager* sm;
-        ROSRobot* robot;
+        ROSSimulationManager *sm;
+        ROSRobot *robot;
         ServoControlMode mode;
         std::vector<std::string> jointNames;
     };
@@ -243,13 +291,13 @@ namespace sf
     class JointCallback
     {
     public:
-        JointCallback(ROSSimulationManager* sm, ROSRobot* robot,
-                      ServoControlMode mode, const std::string& jointName);
-        void operator()(const std_msgs::Float64ConstPtr& msg);
+        JointCallback(ROSSimulationManager *sm, ROSRobot *robot,
+                      ServoControlMode mode, const std::string &jointName);
+        void operator()(const std_msgs::Float64ConstPtr &msg);
 
     private:
-        ROSSimulationManager* sm;
-        ROSRobot* robot;
+        ROSSimulationManager *sm;
+        ROSRobot *robot;
         ServoControlMode mode;
         std::string jointName;
     };
@@ -257,83 +305,82 @@ namespace sf
     class VBSCallback
     {
     public:
-        VBSCallback(VariableBuoyancy* act);
-        void operator()(const std_msgs::Float64ConstPtr& msg);
+        VBSCallback(VariableBuoyancy *act);
+        void operator()(const std_msgs::Float64ConstPtr &msg);
 
     private:
-        VariableBuoyancy* act;
+        VariableBuoyancy *act;
     };
 
     class TrajectoryCallback
     {
     public:
-        TrajectoryCallback(ManualTrajectory* tr);
-        void operator()(const nav_msgs::OdometryConstPtr& msg);
+        TrajectoryCallback(ManualTrajectory *tr);
+        void operator()(const nav_msgs::OdometryConstPtr &msg);
 
     private:
-        ManualTrajectory* tr;
+        ManualTrajectory *tr;
     };
 
     class ActuatorOriginCallback
     {
     public:
-        ActuatorOriginCallback(Actuator* act);
-        void operator()(const geometry_msgs::TransformConstPtr& msg);
+        ActuatorOriginCallback(Actuator *act);
+        void operator()(const geometry_msgs::TransformConstPtr &msg);
 
     private:
-        Actuator* act;
+        Actuator *act;
     };
 
     class SensorOriginCallback
     {
     public:
-        SensorOriginCallback(Sensor* sens);
-        void operator()(const geometry_msgs::TransformConstPtr& msg);
+        SensorOriginCallback(Sensor *sens);
+        void operator()(const geometry_msgs::TransformConstPtr &msg);
 
     private:
-        Sensor* sens;
+        Sensor *sens;
     };
 
     class FLSService
     {
     public:
-        FLSService(FLS* fls);
-        bool operator()(stonefish_mvp::SonarSettings::Request& req, stonefish_mvp::SonarSettings::Response& res);
+        FLSService(FLS *fls);
+        bool operator()(stonefish_mvp::SonarSettings::Request &req, stonefish_mvp::SonarSettings::Response &res);
 
     private:
-        FLS* fls;
+        FLS *fls;
     };
 
     class SSSService
     {
     public:
-        SSSService(SSS* sss);
-        bool operator()(stonefish_mvp::SonarSettings::Request& req, stonefish_mvp::SonarSettings::Response& res);
+        SSSService(SSS *sss);
+        bool operator()(stonefish_mvp::SonarSettings::Request &req, stonefish_mvp::SonarSettings::Response &res);
 
     private:
-        SSS* sss;
+        SSS *sss;
     };
 
     class MSISService
     {
     public:
-        MSISService(MSIS* msis);
-        bool operator()(stonefish_mvp::SonarSettings2::Request& req, stonefish_mvp::SonarSettings2::Response& res);
+        MSISService(MSIS *msis);
+        bool operator()(stonefish_mvp::SonarSettings2::Request &req, stonefish_mvp::SonarSettings2::Response &res);
 
     private:
-        MSIS* msis;
+        MSIS *msis;
     };
 
+    class SuctionCupService
+    {
+    public:
+        SuctionCupService(SuctionCup *suction);
+        bool operator()(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);
 
-	class SuctionCupService
-	{
-	public:
-		SuctionCupService(SuctionCup* suction);
-		bool operator()(std_srvs::SetBool::Request& req, std_srvs::SetBool::Response& res);
-
-	private:
-		SuctionCup* suction;
-	};
+    private:
+        SuctionCup *suction;
+    };
 }
 
 #endif

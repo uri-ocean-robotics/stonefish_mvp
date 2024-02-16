@@ -47,6 +47,7 @@
 #include <Stonefish/sensors/vision/SSS.h>
 #include <Stonefish/sensors/vision/MSIS.h>
 #include <Stonefish/sensors/Contact.h>
+#include <Stonefish/comms/AcousticModem.h>
 #include <Stonefish/comms/USBL.h>
 #include <Stonefish/entities/AnimatedEntity.h>
 #include <Stonefish/core/SimulationApp.h>
@@ -68,12 +69,14 @@
 #include <nav_msgs/Odometry.h>
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
+#include <std_msgs/String.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl_ros/point_cloud.h>
 
 #include <stonefish_mvp/Int32Stamped.h>
 #include <stonefish_mvp/BeaconInfo.h>
+#include <stonefish_mvp/ModemMsg.h>
 
 #include <Eigen/Core>
 #include <Eigen/Dense>
@@ -544,6 +547,28 @@ void ROSInterface::PublishContact(ros::Publisher& pub, Contact* cnt)
     msg.color.b = 0.0;
     msg.color.a = 1.0;
     pub.publish(msg);
+}
+
+void ROSInterface::PublishAcousticModem(ros::Publisher& pub, AcousticModem* modem)
+{
+    std::map<uint64_t, ModemMsg>& msgs = modem->getMsgs();
+    if(msgs.size() == 0)
+        return;
+
+    stonefish_mvp::ModemMsg msg;
+
+    msg.header.frame_id = modem->getName();
+    msg.header.stamp.fromNSec(SIMULATION_TIME * 1000);
+
+    for(auto it = msgs.begin(); it != msgs.end(); it++)
+    {
+        msg.source_id = it->second.source;
+        msg.destination_id = it->second.destination;
+        msg.travel_time = it->second.t;
+        msg.data = it->second.data;
+
+        pub.publish(msg);
+    }
 }
 
 void ROSInterface::PublishUSBL(ros::Publisher& pub, ros::Publisher& pub_info, USBL* usbl)

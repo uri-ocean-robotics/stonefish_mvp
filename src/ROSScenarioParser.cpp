@@ -67,6 +67,7 @@
 #include <stonefish_mvp/ThrusterState.h>
 #include <stonefish_mvp/Int32Stamped.h>
 #include <stonefish_mvp/BeaconInfo.h>
+#include <stonefish_mvp/ModemMsg.h>
 
 #include <ros/package.h>
 
@@ -303,6 +304,25 @@ bool ROSScenarioParser::ParseRobot(XMLElement* element)
                 rosSubTopicName, 10,
                 std::bind(&ROSActuator::callback, &a, std::placeholders::_1));
     }
+
+    for(auto& c : rosRobot->rosComms) {
+    std::string rosSubTopicName = c.rosSubTopicName;
+    for(auto* e = element->FirstChildElement("comm"); e != nullptr; e = e->NextSiblingElement("comm"))
+    {
+        if(c.comm->getName().find(e->Attribute("name")) != std::string::npos)
+        {
+            if((item = e->FirstChildElement("ros_subscriber")) != nullptr)
+            {
+                rosSubTopicName = item->Attribute("topic");
+            }
+            break;
+        }
+    }
+    subs[robot->getName() + "/comms" + c.comm->getName()] =
+        nh.subscribe<std_msgs::String>(
+            rosSubTopicName, 10,
+            std::bind(&ROSComm::callback, &c, std::placeholders::_1));
+}
 
     //Generate subscribers
     if((item = element->FirstChildElement("ros_subscriber")) != nullptr)
@@ -832,6 +852,12 @@ Comm* ROSScenarioParser::ParseComm(XMLElement* element, const std::string& nameP
         //Generate publishers for different comm types
         switch(comm->getType())
         {
+            case CommType::ACOUSTIC:
+            {
+                pubs[commName] = nh.advertise<stonefish_mvp::ModemMsg>(topicStr,10);
+            }
+                break;
+
             case CommType::USBL:
             {
                 pubs[commName] = nh.advertise<visualization_msgs::MarkerArray>(topicStr, 10);

@@ -52,6 +52,7 @@ namespace sf
     class SSS;
     class MSIS;
     class Contact;
+    class AcousticModem;
     class USBL;
     class AnimatedEntity;
 
@@ -76,6 +77,7 @@ namespace sf
         static void PublishProfiler(ros::Publisher& pub, Profiler* prof);
         static void PublishMultibeam2(ros::Publisher& pub, Multibeam2* mb);
         static void PublishContact(ros::Publisher& pub, Contact* cnt);
+        static void PublishAcousticModem(ros::Publisher&pub, AcousticModem* modem);
         static void PublishUSBL(ros::Publisher& pub, ros::Publisher& pub_info, USBL* usbl);
         static void PublishTrajectoryState(ros::Publisher& odom, ros::Publisher& iter, AnimatedEntity* anim);
 

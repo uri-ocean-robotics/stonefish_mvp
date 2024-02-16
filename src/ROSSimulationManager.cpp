@@ -52,6 +52,7 @@
 #include <Stonefish/sensors/vision/SSS.h>
 #include <Stonefish/sensors/vision/MSIS.h>
 #include <Stonefish/sensors/Contact.h>
+#include <Stonefish/comms/AcousticModem.h>
 #include <Stonefish/comms/USBL.h>
 #include <Stonefish/actuators/Thruster.h>
 #include <Stonefish/actuators/Propeller.h>
@@ -324,6 +325,11 @@ void ROSSimulationManager::SimulationStepCompleted(Scalar timeStep)
 
         switch(comm->getType())
         {
+            case CommType::ACOUSTIC:
+                ROSInterface::PublishAcousticModem(pubs.at(comm->getName()), (AcousticModem*)comm);
+                comm->MarkDataOld();
+                break;
+
             case CommType::USBL:
                 ROSInterface::PublishUSBL(pubs.at(comm->getName()), pubs.at(comm->getName() + "/beacon_info"), (USBL*)comm);
                 comm->MarkDataOld();
