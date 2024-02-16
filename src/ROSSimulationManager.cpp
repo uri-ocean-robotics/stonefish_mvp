@@ -314,9 +314,18 @@ void ROSSimulationManager::SimulationStepCompleted(Scalar timeStep)
 
     ///////////////////////////////////////COMMS///////////////////////////////////////////////////
     id = 0;
-    Comm* comm;
+    Comm* comm;   
+
+    for(size_t i=0; i<rosRobots.size(); ++i)
+    {     
+        for(auto& c : rosRobots[i]->rosComms) {
+            c.sendData();
+        }
+    }
+    
     while((comm = getComm(id++)) != nullptr)
     {
+
         if(!comm->isNewDataAvailable())
             continue;
 

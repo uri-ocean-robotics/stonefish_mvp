@@ -860,7 +860,8 @@ Comm* ROSScenarioParser::ParseComm(XMLElement* element, const std::string& nameP
 
             case CommType::USBL:
             {
-                pubs[commName] = nh.advertise<visualization_msgs::MarkerArray>(topicStr, 10);
+                pubs[commName] = nh.advertise<stonefish_mvp::ModemMsg>(topicStr,10);
+                pubs[commName + "/ranging"] = nh.advertise<visualization_msgs::MarkerArray>(topicStr + "/ranging", 10);
                 pubs[commName + "/beacon_info"] = nh.advertise<stonefish_mvp::BeaconInfo>(topicStr + "/beacon_info", 10);
             }
                 break;

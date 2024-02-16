@@ -114,6 +114,8 @@ namespace sf
 
         std::string rosSubTopicName;
 
+        bool send = false;
+
         ROSComm(Comm *comm) : 
             comm(comm), data("")
         {
@@ -122,23 +124,28 @@ namespace sf
 
         void sendData()
         {
-            switch (comm->getType())
-            {
-            case CommType::ACOUSTIC:
-                ((AcousticModem *)comm)->SendMessage(data);
-                break;
-            case CommType::USBL:
-                ((USBL *)comm)->SendMessage(data);
-                break;
+            if(send)
+                {
+                switch (comm->getType())
+                {
+                case CommType::ACOUSTIC:
+                    ((AcousticModem *)comm)->SendMessage(data);
+                    break;
+                case CommType::USBL:
+                    ((USBL *)comm)->SendMessage(data);
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+                }
+                send = false;
             }
         }
 
         void callback(const std_msgs::StringConstPtr &msg)
         {
             data = msg->data;
+            send = true;
         }
     };
 
